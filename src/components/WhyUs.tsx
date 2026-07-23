@@ -1,23 +1,23 @@
 const points = [
   {
-    icon: "🔥",
+    icon: "\u{1F525}",
     title: "Double-Fried Crunch",
     text: "Every piece is fried twice in fresh oil for that signature Krazy shatter.",
   },
   {
-    icon: "🌶️",
+    icon: "\u{1F336}\u{FE0F}",
     title: "3 Spice Levels",
-    text: "Mild to Krazy-hot — tell us your level, we'll match it.",
+    text: "Mild to Krazy-hot - tell us your level, we'll match it.",
   },
   {
-    icon: "🛵",
+    icon: "\u{1F6F5}",
     title: "Fast, Hot Delivery",
     text: "Sealed and rushed out so it reaches you as hot as the fryer.",
   },
   {
-    icon: "💬",
+    icon: "\u{1F4AC}",
     title: "Order on WhatsApp",
-    text: "No app, no signup. Add to cart, confirm, send — that's it.",
+    text: "No app, no signup. Add to cart, confirm, send - that's it.",
   },
 ];
 
@@ -25,23 +25,26 @@ export default function WhyUs() {
   return (
     <section id="why-us" className="bg-ink py-16 text-cream md:py-24">
       <div className="mx-auto max-w-6xl px-5 md:px-8">
-        <span className="font-body text-xs font-bold uppercase tracking-[0.2em] text-mustard">
+        <span className="font-body text-xs font-extrabold uppercase tracking-[0.2em] text-mustard">
           Why Krazy Crunch
         </span>
-        <h2 className="mt-2 max-w-lg font-display text-4xl tracking-wide md:text-5xl">
+        <h2 className="mt-2 max-w-lg font-display text-5xl leading-none tracking-wide md:text-6xl">
           MADE KRAZY, SERVED FAST.
         </h2>
 
-        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {points.map((p) => (
-            <div key={p.title}>
+            <div
+              key={p.title}
+              className="rounded-xl border border-cream/10 bg-cream/8 p-5 transition hover:border-mustard/45 hover:bg-cream/12"
+            >
               <span className="text-3xl" aria-hidden>
                 {p.icon}
               </span>
-              <h3 className="mt-3 font-display text-xl tracking-wide">
+              <h3 className="mt-4 font-display text-2xl leading-none tracking-wide text-mustard">
                 {p.title}
               </h3>
-              <p className="mt-1 font-body text-sm text-cream/60">{p.text}</p>
+              <p className="mt-3 font-body text-sm leading-6 text-cream/62">{p.text}</p>
             </div>
           ))}
         </div>

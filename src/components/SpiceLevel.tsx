@@ -8,7 +8,7 @@ export default function SpiceLevel({ level }: { level: 0 | 1 | 2 | 3 }) {
           aria-hidden
           className={`text-xs ${i < level ? "opacity-100" : "opacity-20"}`}
         >
-          🌶️
+          {"\u{1F336}\u{FE0F}"}
         </span>
       ))}
     </span>

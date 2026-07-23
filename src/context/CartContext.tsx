@@ -43,24 +43,26 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
-  // Load cart from localStorage on mount
   useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw) setLines(JSON.parse(raw));
-    } catch {
-      // ignore corrupted storage
-    }
-    setHydrated(true);
+    const timer = window.setTimeout(() => {
+      try {
+        const raw = window.localStorage.getItem(STORAGE_KEY);
+        if (raw) setLines(JSON.parse(raw));
+      } catch {
+        // Ignore corrupted storage.
+      }
+      setHydrated(true);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
-  // Persist cart on change
   useEffect(() => {
     if (!hydrated) return;
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(lines));
     } catch {
-      // ignore quota errors
+      // Ignore quota errors.
     }
   }, [lines, hydrated]);
 
@@ -132,12 +134,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const itemLines = lines
       .map(
         (l) =>
-          `${l.qty}x ${l.name} — ${currency}${(l.qty * l.price).toLocaleString()}`
+          `${l.qty}x ${l.name} - ${currency}${(l.qty * l.price).toLocaleString()}`
       )
       .join("\n");
 
     const message = [
-      `*Naya Order — ${siteConfig.name}*`,
+      `*Naya Order - ${siteConfig.name}*`,
       "",
       itemLines,
       "",

@@ -10,9 +10,9 @@ import { CartProvider } from "@/context/CartContext";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: `${siteConfig.name} — Fried Chicken, Burgers & Krazy Deals`,
+  title: `${siteConfig.name} - Fried Chicken, Burgers & Krazy Deals`,
   description:
-    "Order Krazy Crunch fried chicken, zinger burgers, wraps and deals online — straight to WhatsApp, no app needed.",
+    "Order Krazy Crunch fried chicken, zinger burgers, wraps and deals online - straight to WhatsApp, no app needed.",
 };
 
 export default function RootLayout({
