@@ -11,6 +11,26 @@
   --color-cream-dim: #f1dfbd;
   --color-leaf: #14a44d;
   --color-white: #ffffff;
+  --page-bg-start: #fff8ea;
+  --page-bg-end: #fffaf0;
+  --page-glow: rgba(255, 196, 0, 0.22);
+}
+
+html[data-theme="dark"] {
+  --color-ink: #fdf1d3;
+  --color-ink-soft: #f7dcaa;
+  --color-chili: #ff4a2f;
+  --color-chili-dark: #d9341d;
+  --color-mustard: #ffd447;
+  --color-mustard-dark: #f0b91a;
+  --color-cream: #16100c;
+  --color-cream-dim: #2a1d14;
+  --color-leaf: #26c764;
+  --color-white: #22170f;
+  --page-bg-start: #120c08;
+  --page-bg-end: #20150e;
+  --page-glow: rgba(255, 74, 47, 0.18);
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -33,14 +53,62 @@ html {
 
 body {
   background:
-    radial-gradient(circle at 10% 0%, rgba(255, 196, 0, 0.22), transparent 28rem),
-    linear-gradient(180deg, #fff8ea 0%, var(--color-cream) 42%, #fffaf0 100%);
+    radial-gradient(circle at 10% 0%, var(--page-glow), transparent 28rem),
+    linear-gradient(180deg, var(--page-bg-start) 0%, var(--color-cream) 42%, var(--page-bg-end) 100%);
   color: var(--color-ink);
   font-family: var(--font-body);
+  transition: background-color 240ms ease, color 240ms ease;
 }
 
 .font-display {
   font-family: var(--font-display);
+}
+
+html[data-theme="dark"] .theme-dark-section {
+  background-color: #0f0a07;
+  color: #fdf1d3;
+}
+
+html[data-theme="dark"] .theme-dark-header {
+  background-color: rgba(15, 10, 7, 0.96);
+  color: #fdf1d3;
+}
+
+html[data-theme="dark"] .theme-card {
+  background-color: #21160f;
+  border-color: rgba(255, 212, 71, 0.14);
+}
+
+html[data-theme="dark"] .theme-muted-card {
+  background-color: #2a1d14;
+}
+
+html[data-theme="dark"] .theme-control {
+  background-color: #fdf1d3;
+  color: #17110d;
+}
+
+html[data-theme="dark"] .theme-invert-text {
+  color: #fdf1d3;
+}
+
+html[data-theme="dark"] .theme-dark-section .text-cream,
+html[data-theme="dark"] .theme-dark-header .text-cream,
+html[data-theme="dark"] .theme-dark-section .text-cream\/60,
+html[data-theme="dark"] .theme-dark-section .text-cream\/62,
+html[data-theme="dark"] .theme-dark-section .text-cream\/70,
+html[data-theme="dark"] .theme-dark-section .text-cream\/75,
+html[data-theme="dark"] .theme-dark-section .text-cream\/76,
+html[data-theme="dark"] .theme-dark-section .text-cream\/80,
+html[data-theme="dark"] .theme-dark-header .text-cream\/55,
+html[data-theme="dark"] .theme-dark-header .text-cream\/75,
+html[data-theme="dark"] .theme-dark-header .text-cream\/80 {
+  color: #fdf1d3;
+}
+
+html[data-theme="dark"] .theme-card.bg-white,
+html[data-theme="dark"] .theme-card .bg-white {
+  background-color: #21160f;
 }
 
 /* ── Signature element: the "krazy bite" ──────────────────────────────

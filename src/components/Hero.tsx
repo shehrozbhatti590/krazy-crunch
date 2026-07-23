@@ -2,7 +2,7 @@ import { siteConfig } from "@/config/site";
 
 export default function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden bg-ink text-cream">
+    <section id="top" className="theme-dark-section relative overflow-hidden bg-ink text-cream">
       <div
         aria-hidden
         className="animate-sizzle-drift pointer-events-none absolute inset-0 opacity-[0.12]"
@@ -66,7 +66,7 @@ export default function Hero() {
           ].map(([stat, label], i) => (
             <div
               key={label}
-              className="motion-card rounded-xl border border-cream/10 bg-cream/8 p-3 backdrop-blur hover:-translate-y-1 hover:border-mustard/40"
+              className="motion-card theme-card rounded-xl border border-cream/10 bg-cream/8 p-3 backdrop-blur hover:-translate-y-1 hover:border-mustard/40"
               style={{ animationDelay: `${0.32 + i * 0.08}s` }}
             >
               <p className="font-display text-2xl leading-none text-mustard md:text-3xl">

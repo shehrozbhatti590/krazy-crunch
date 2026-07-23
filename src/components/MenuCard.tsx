@@ -17,7 +17,7 @@ export default function MenuCard({ item }: { item: MenuItem }) {
   const qty = line?.qty ?? 0;
 
   return (
-    <div className="motion-card animate-float-up group flex flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-ink/8 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-ink/10">
+    <div className="motion-card theme-card animate-float-up group flex flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-ink/8 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-ink/10">
       <div
         className={`jagged-edge relative flex h-36 items-center justify-center ${accentBg[item.accent]}`}
       >
@@ -59,7 +59,7 @@ export default function MenuCard({ item }: { item: MenuItem }) {
               Add
             </button>
           ) : (
-            <div className="flex items-center gap-1 rounded-xl bg-cream-dim p-1">
+            <div className="theme-muted-card flex items-center gap-1 rounded-xl bg-cream-dim p-1">
               <button
                 onClick={() => decrement(item.id)}
                 aria-label={`Remove one ${item.name}`}

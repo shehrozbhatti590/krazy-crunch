@@ -21,8 +21,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full" suppressHydrationWarning>
       <body className="min-h-full flex flex-col bg-cream text-ink antialiased">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (() => {
+                try {
+                  const saved = localStorage.getItem("krazy-crunch-theme");
+                  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+                  document.documentElement.dataset.theme = saved || (prefersDark ? "dark" : "light");
+                } catch {
+                  document.documentElement.dataset.theme = "light";
+                }
+              })();
+            `,
+          }}
+        />
         <CartProvider>{children}</CartProvider>
       </body>
     </html>

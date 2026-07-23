@@ -23,7 +23,7 @@ const points = [
 
 export default function WhyUs() {
   return (
-    <section id="why-us" className="bg-ink py-16 text-cream md:py-24">
+    <section id="why-us" className="theme-dark-section bg-ink py-16 text-cream md:py-24">
       <div className="mx-auto max-w-6xl px-5 md:px-8">
         <span className="font-body text-xs font-extrabold uppercase tracking-[0.2em] text-mustard">
           Why Krazy Crunch
@@ -36,7 +36,7 @@ export default function WhyUs() {
           {points.map((p, i) => (
             <div
               key={p.title}
-              className="motion-card group animate-pop-in rounded-xl border border-cream/10 bg-cream/8 p-5 hover:-translate-y-1 hover:border-mustard/45 hover:bg-cream/12"
+              className="motion-card theme-card group animate-pop-in rounded-xl border border-cream/10 bg-cream/8 p-5 hover:-translate-y-1 hover:border-mustard/45 hover:bg-cream/12"
               style={{ animationDelay: `${i * 0.08}s` }}
             >
               <span className="inline-block text-3xl transition duration-300 group-hover:scale-110" aria-hidden>
