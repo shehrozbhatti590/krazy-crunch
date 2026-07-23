@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+:root {
+  --color-ink: #1c1712;
+  --color-ink-soft: #2b241d;
+  --color-chili: #d62828;
+  --color-chili-dark: #a31e1e;
+  --color-mustard: #f4b41a;
+  --color-mustard-dark: #d99c0c;
+  --color-cream: #fff8ed;
+  --color-cream-dim: #f5ecd9;
+  --color-leaf: #4c7a3d;
+  --color-white: #ffffff;
+}
+
+@theme inline {
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-chili: var(--color-chili);
+  --color-chili-dark: var(--color-chili-dark);
+  --color-mustard: var(--color-mustard);
+  --color-mustard-dark: var(--color-mustard-dark);
+  --color-cream: var(--color-cream);
+  --color-cream-dim: var(--color-cream-dim);
+  --color-leaf: var(--color-leaf);
+  --font-display: "Anton", sans-serif;
+  --font-body: "Work Sans", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* ── Signature element: the "krazy bite" ──────────────────────────────
+   A circular bite taken out of a corner. Used sparingly on primary CTAs,
+   price tags, and the cart badge — the one visual idea this site repeats. */
+.krazy-bite {
+  --bite-size: 16px;
+  --bite-pos-x: calc(100% - 4px);
+  --bite-pos-y: 4px;
+  -webkit-mask-image: radial-gradient(
+    circle var(--bite-size) at var(--bite-pos-x) var(--bite-pos-y),
+    transparent 99%,
+    black 100%
+  );
+  mask-image: radial-gradient(
+    circle var(--bite-size) at var(--bite-pos-x) var(--bite-pos-y),
+    transparent 99%,
+    black 100%
+  );
+}
+
+/* Jagged torn-edge divider, like the crimped edge of a chip bag */
+.jagged-edge {
+  clip-path: polygon(
+    0% 0%, 100% 0%, 100% 100%,
+    95% 88%, 90% 100%, 85% 88%, 80% 100%,
+    75% 88%, 70% 100%, 65% 88%, 60% 100%,
+    55% 88%, 50% 100%, 45% 88%, 40% 100%,
+    35% 88%, 30% 100%, 25% 88%, 20% 100%,
+    15% 88%, 10% 100%, 5% 88%, 0% 100%
+  );
+}
+
+.jagged-edge-top {
+  clip-path: polygon(
+    0% 100%, 100% 100%, 100% 0%,
+    95% 12%, 90% 0%, 85% 12%, 80% 0%,
+    75% 12%, 70% 0%, 65% 12%, 60% 0%,
+    55% 12%, 50% 0%, 45% 12%, 40% 0%,
+    35% 12%, 30% 0%, 25% 12%, 20% 0%,
+    15% 12%, 10% 0%, 5% 12%, 0% 0%
+  );
+}
+
+@keyframes float-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-float-up {
+  animation: float-up 0.5s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-up {
+    animation: none;
+  }
+}
+
+::selection {
+  background: var(--color-chili);
+  color: var(--color-cream);
+}
