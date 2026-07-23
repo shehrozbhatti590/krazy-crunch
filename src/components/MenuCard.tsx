@@ -51,9 +51,12 @@ export default function MenuCard({ item }: { item: MenuItem }) {
           {qty === 0 ? (
             <button
               onClick={() => addItem(item)}
-              className="cta-shine krazy-bite rounded-xl bg-ink px-4 py-2.5 font-body text-xs font-extrabold uppercase tracking-wider text-cream transition hover:-translate-y-0.5 hover:bg-chili active:scale-95"
+              className="cta-shine flex items-center gap-2 rounded-full bg-ink py-1.5 pl-2 pr-4 font-body text-xs font-extrabold uppercase tracking-wider text-cream shadow-md shadow-ink/15 transition hover:-translate-y-0.5 hover:bg-chili active:scale-95"
             >
-              Add +
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-mustard text-sm leading-none text-ink">
+                +
+              </span>
+              Add
             </button>
           ) : (
             <div className="flex items-center gap-1 rounded-xl bg-cream-dim p-1">
