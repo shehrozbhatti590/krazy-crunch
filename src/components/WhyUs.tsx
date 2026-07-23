@@ -28,17 +28,18 @@ export default function WhyUs() {
         <span className="font-body text-xs font-extrabold uppercase tracking-[0.2em] text-mustard">
           Why Krazy Crunch
         </span>
-        <h2 className="mt-2 max-w-lg font-display text-5xl leading-none tracking-wide md:text-6xl">
+        <h2 className="animate-pop-in mt-2 max-w-lg font-display text-5xl leading-none tracking-wide md:text-6xl">
           MADE KRAZY, SERVED FAST.
         </h2>
 
         <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {points.map((p) => (
+          {points.map((p, i) => (
             <div
               key={p.title}
-              className="rounded-xl border border-cream/10 bg-cream/8 p-5 transition hover:border-mustard/45 hover:bg-cream/12"
+              className="motion-card group animate-pop-in rounded-xl border border-cream/10 bg-cream/8 p-5 hover:-translate-y-1 hover:border-mustard/45 hover:bg-cream/12"
+              style={{ animationDelay: `${i * 0.08}s` }}
             >
-              <span className="text-3xl" aria-hidden>
+              <span className="inline-block text-3xl transition duration-300 group-hover:scale-110" aria-hidden>
                 {p.icon}
               </span>
               <h3 className="mt-4 font-display text-2xl leading-none tracking-wide text-mustard">

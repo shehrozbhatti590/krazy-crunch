@@ -15,7 +15,7 @@ export default function MenuSection() {
 
   return (
     <section id="menu" className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
-      <div className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+      <div className="animate-pop-in mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div className="max-w-xl">
           <span className="font-body text-xs font-extrabold uppercase tracking-[0.2em] text-chili">
             The Menu
@@ -30,12 +30,12 @@ export default function MenuSection() {
         </p>
       </div>
 
-      <div className="mb-10 flex gap-2 overflow-x-auto rounded-2xl bg-white/80 p-2 shadow-sm ring-1 ring-ink/8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="animate-pop-in stagger-1 mb-10 flex gap-2 overflow-x-auto rounded-2xl bg-white/80 p-2 shadow-sm ring-1 ring-ink/8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => setActive(cat)}
-            className={`shrink-0 rounded-xl px-5 py-3 font-body text-xs font-extrabold uppercase tracking-wide transition ${
+            className={`shrink-0 rounded-xl px-5 py-3 font-body text-xs font-extrabold uppercase tracking-wide transition hover:-translate-y-0.5 active:scale-95 ${
               active === cat
                 ? "bg-ink text-mustard shadow-lg shadow-ink/15"
                 : "text-ink/55 hover:bg-cream hover:text-ink"

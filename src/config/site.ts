@@ -9,13 +9,18 @@ export const siteConfig = {
   whatsappNumber: "923045576590",
 
   // Shown in footer / location section. Edit to your real address.
-  address: "Shop 12, Commercial Market, Bahria Town, Rawalpindi, Punjab",
+  address: "Shop 3, Ashraf Colony Dhamial Road, Rawalpindi, Punjab",
   city: "Rawalpindi",
   phoneDisplay: "0304 5576590",
 
   hours: [
-    { day: "Monday - Thursday", time: "12:00 PM - 12:00 AM" },
-    { day: "Friday - Sunday", time: "12:00 PM - 1:00 AM" },
+    { day: "Monday", time: "12:00 PM - 3:00 AM" },
+    { day: "Tuesday", time: "12:00 PM - 3:00 AM" },
+    { day: "Wednesday", time: "12:00 PM - 3:00 AM" },
+    { day: "Thursday", time: "12:00 PM - 3:00 AM" },
+    { day: "Friday", time: "12:00 PM - 3:00 AM" },
+    { day: "Saturday", time: "12:00 PM - 1:00 AM" },
+    { day: "Sunday", time: "12:00 PM - 1:00 AM" },
   ],
 
   socials: {

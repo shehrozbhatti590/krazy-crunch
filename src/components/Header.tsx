@@ -41,7 +41,7 @@ export default function Header() {
             <a
               key={link.href}
               href={link.href}
-              className="rounded-full px-4 py-2 font-body text-xs font-extrabold uppercase tracking-[0.16em] text-cream/75 transition hover:bg-cream/10 hover:text-mustard"
+            className="rounded-full px-4 py-2 font-body text-xs font-extrabold uppercase tracking-[0.16em] text-cream/75 transition hover:-translate-y-0.5 hover:bg-cream/10 hover:text-mustard"
             >
               {link.label}
             </a>
@@ -53,7 +53,7 @@ export default function Header() {
             href={`https://wa.me/${siteConfig.whatsappNumber}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden items-center gap-2 rounded-full border border-mustard/40 bg-mustard/10 px-4 py-2 text-xs font-extrabold uppercase tracking-wider text-mustard transition hover:bg-mustard hover:text-ink sm:flex"
+            className="cta-shine hidden items-center gap-2 rounded-full border border-mustard/40 bg-mustard/10 px-4 py-2 text-xs font-extrabold uppercase tracking-wider text-mustard transition hover:-translate-y-0.5 hover:bg-mustard hover:text-ink sm:flex"
           >
             <span aria-hidden>{"\u{1F4AC}"}</span> {siteConfig.phoneDisplay}
           </a>
@@ -61,7 +61,7 @@ export default function Header() {
           <button
             onClick={openCart}
             aria-label="Open cart"
-            className="krazy-bite relative flex h-11 w-11 items-center justify-center rounded-xl bg-chili text-cream shadow-lg shadow-chili/30 transition hover:bg-chili-dark active:scale-95"
+            className="krazy-bite relative flex h-11 w-11 items-center justify-center rounded-xl bg-chili text-cream shadow-lg shadow-chili/30 transition hover:-translate-y-0.5 hover:bg-chili-dark active:scale-95"
           >
             <span className="text-lg" aria-hidden>
               {"\u{1F6D2}"}

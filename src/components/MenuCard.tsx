@@ -17,12 +17,12 @@ export default function MenuCard({ item }: { item: MenuItem }) {
   const qty = line?.qty ?? 0;
 
   return (
-    <div className="animate-float-up group flex flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-ink/8 transition hover:-translate-y-1 hover:shadow-2xl hover:shadow-ink/10">
+    <div className="motion-card animate-float-up group flex flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-ink/8 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-ink/10">
       <div
         className={`jagged-edge relative flex h-36 items-center justify-center ${accentBg[item.accent]}`}
       >
         <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.26)_0_25%,transparent_25%_50%,rgba(255,255,255,0.18)_50%_75%,transparent_75%)] bg-[length:30px_30px] opacity-45" />
-        <span className="relative text-6xl drop-shadow-[0_8px_0_rgba(0,0,0,0.12)]" aria-hidden>
+        <span className="relative text-6xl drop-shadow-[0_8px_0_rgba(0,0,0,0.12)] transition duration-300 group-hover:-rotate-6 group-hover:scale-110" aria-hidden>
           {item.emoji}
         </span>
         {item.badge && (
@@ -51,7 +51,7 @@ export default function MenuCard({ item }: { item: MenuItem }) {
           {qty === 0 ? (
             <button
               onClick={() => addItem(item)}
-              className="krazy-bite rounded-xl bg-ink px-4 py-2.5 font-body text-xs font-extrabold uppercase tracking-wider text-cream transition hover:bg-chili active:scale-95"
+              className="cta-shine krazy-bite rounded-xl bg-ink px-4 py-2.5 font-body text-xs font-extrabold uppercase tracking-wider text-cream transition hover:-translate-y-0.5 hover:bg-chili active:scale-95"
             >
               Add +
             </button>

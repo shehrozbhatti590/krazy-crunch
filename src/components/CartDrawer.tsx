@@ -48,7 +48,7 @@ export default function CartDrawer() {
         role="dialog"
         aria-label="Your cart"
         className={`fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col bg-cream shadow-2xl transition-transform duration-300 ${
-          isOpen ? "translate-x-0" : "translate-x-full"
+          isOpen ? "animate-cart-enter translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="flex items-center justify-between border-b border-cream/10 bg-ink px-5 py-4">
@@ -67,7 +67,7 @@ export default function CartDrawer() {
         <div className="flex-1 overflow-y-auto px-5 py-4">
           {lines.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
-              <span className="text-4xl" aria-hidden>
+              <span className="animate-gentle-bounce text-4xl" aria-hidden>
                 {"\u{1F6D2}"}
               </span>
               <p className="font-body text-sm font-medium text-ink/50">
@@ -76,12 +76,13 @@ export default function CartDrawer() {
             </div>
           ) : (
             <div className="flex flex-col gap-3">
-              {lines.map((line) => (
+              {lines.map((line, i) => (
                 <div
                   key={line.id}
-                  className="flex items-center gap-3 rounded-xl bg-white p-3 shadow-sm ring-1 ring-ink/8"
+                  className="motion-card animate-pop-in flex items-center gap-3 rounded-xl bg-white p-3 shadow-sm ring-1 ring-ink/8 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-ink/8"
+                  style={{ animationDelay: `${i * 0.05}s` }}
                 >
-                  <span className="text-2xl" aria-hidden>
+                  <span className="text-2xl transition duration-200 hover:scale-110" aria-hidden>
                     {line.emoji}
                   </span>
                   <div className="flex-1">
@@ -96,7 +97,7 @@ export default function CartDrawer() {
                   <div className="flex items-center gap-1 rounded-xl bg-cream-dim p-1">
                     <button
                       onClick={() => decrement(line.id)}
-                      className="flex h-7 w-7 items-center justify-center rounded-lg font-bold text-chili hover:bg-white"
+                      className="flex h-7 w-7 items-center justify-center rounded-lg font-bold text-chili transition hover:bg-white active:scale-90"
                       aria-label={`Remove one ${line.name}`}
                     >
                       -
@@ -106,7 +107,7 @@ export default function CartDrawer() {
                     </span>
                     <button
                       onClick={() => increment(line.id)}
-                      className="flex h-7 w-7 items-center justify-center rounded-lg font-bold text-chili hover:bg-white"
+                      className="flex h-7 w-7 items-center justify-center rounded-lg font-bold text-chili transition hover:bg-white active:scale-90"
                       aria-label={`Add one more ${line.name}`}
                     >
                       +
@@ -162,7 +163,7 @@ export default function CartDrawer() {
                   <button
                     key={method}
                     onClick={() => setPaymentMethod(method)}
-                    className={`flex-1 rounded-xl px-3 py-2.5 font-body text-xs font-extrabold transition ${
+                    className={`flex-1 rounded-xl px-3 py-2.5 font-body text-xs font-extrabold transition hover:-translate-y-0.5 active:scale-95 ${
                       paymentMethod === method
                         ? "bg-ink text-mustard"
                         : "bg-white text-ink/60 ring-1 ring-ink/10"
@@ -211,7 +212,7 @@ export default function CartDrawer() {
 
             <button
               onClick={handleCheckout}
-              className="krazy-bite flex w-full items-center justify-center gap-2 rounded-xl bg-leaf px-6 py-4 font-body text-sm font-extrabold uppercase tracking-wider text-cream shadow-lg shadow-leaf/30 transition hover:brightness-110 active:scale-[0.98]"
+              className="cta-shine krazy-bite flex w-full items-center justify-center gap-2 rounded-xl bg-leaf px-6 py-4 font-body text-sm font-extrabold uppercase tracking-wider text-cream shadow-lg shadow-leaf/30 transition hover:-translate-y-0.5 hover:brightness-110 active:scale-[0.98]"
             >
               <span aria-hidden>{"\u{1F4AC}"}</span> Order via WhatsApp
             </button>
