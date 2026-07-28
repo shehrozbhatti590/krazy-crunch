@@ -3,8 +3,18 @@ import { siteConfig } from "@/config/site";
 export default function LocationSection() {
   return (
     <section id="location" className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
-      <div className="motion-card theme-card animate-pop-in grid grid-cols-1 gap-10 overflow-hidden rounded-2xl bg-white p-8 shadow-xl shadow-ink/8 ring-1 ring-ink/8 hover:shadow-2xl hover:shadow-ink/10 md:grid-cols-2 md:p-14">
-        <div>
+      <div className="motion-card theme-card animate-pop-in relative grid grid-cols-1 gap-10 overflow-hidden rounded-2xl bg-white p-8 shadow-xl shadow-ink/8 ring-1 ring-ink/8 hover:shadow-2xl hover:shadow-ink/10 md:grid-cols-2 md:p-14">
+        <div
+          aria-hidden
+          className="location-photo"
+          style={{
+            backgroundImage:
+              "url(https://images.unsplash.com/photo-1608039755401-742074f0548d?auto=format&fit=crop&w=1600&q=70)",
+          }}
+        />
+        <div aria-hidden className="location-photo-overlay" />
+
+        <div className="relative">
           <span className="font-body text-xs font-extrabold uppercase tracking-[0.2em] text-chili">
             Find Us
           </span>
@@ -25,7 +35,7 @@ export default function LocationSection() {
           </a>
         </div>
 
-        <div className="theme-muted-card rounded-xl bg-cream p-5 ring-1 ring-ink/8 transition hover:-translate-y-0.5">
+        <div className="theme-muted-card relative rounded-xl bg-cream p-5 ring-1 ring-ink/8 transition hover:-translate-y-0.5">
           <span className="font-body text-xs font-extrabold uppercase tracking-[0.2em] text-chili">
             Hours
           </span>

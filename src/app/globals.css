@@ -279,3 +279,161 @@ html[data-theme="dark"] .theme-card .bg-white {
   background: var(--color-chili);
   color: var(--color-cream);
 }
+
+
+/* ── Premium modern polish: scroll reveal + glow cards ────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px) scale(0.97);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.card-premium {
+  position: relative;
+  isolation: isolate;
+  transition:
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 260ms ease;
+}
+
+.card-premium::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(
+    135deg,
+    var(--color-mustard),
+    transparent 45%,
+    var(--color-chili)
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+
+.card-premium:hover::before,
+.card-premium:focus-within::before {
+  opacity: 1;
+}
+
+.card-premium:hover {
+  box-shadow:
+    0 24px 48px -20px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 196, 0, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+
+/* ── Premium background photography (both themes) ─────────────────── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: url("https://images.unsplash.com/photo-1636907229111-a8ac768fe6c9?auto=format&fit=crop&w=1920&q=60");
+  background-size: cover;
+  background-position: center;
+  filter: blur(3px) saturate(1.05);
+  opacity: 0.07;
+  pointer-events: none;
+}
+
+html[data-theme="dark"] body::before {
+  opacity: 0.16;
+  filter: blur(3px) saturate(1.1) brightness(0.5);
+}
+
+/* Hero background slider */
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.hero-slide.is-active {
+  opacity: 1;
+}
+
+.hero-slide-img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transform: scale(1);
+}
+
+.hero-slide.is-active .hero-slide-img {
+  animation: ken-burns 7s ease-out forwards;
+}
+
+@keyframes ken-burns {
+  from { transform: scale(1); }
+  to { transform: scale(1.12); }
+}
+
+.hero-slide-dot {
+  transition: all 260ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide.is-active .hero-slide-img {
+    animation: none;
+  }
+}
+
+
+/* Location section background photo */
+.location-photo {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.32;
+}
+
+.location-photo-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    rgba(255, 255, 255, 0.97) 0%,
+    rgba(255, 255, 255, 0.9) 38%,
+    rgba(255, 255, 255, 0.6) 72%,
+    rgba(255, 255, 255, 0.35) 100%
+  );
+}
+
+html[data-theme="dark"] .location-photo-overlay {
+  background: linear-gradient(
+    110deg,
+    rgba(33, 22, 15, 0.97) 0%,
+    rgba(33, 22, 15, 0.9) 38%,
+    rgba(33, 22, 15, 0.6) 72%,
+    rgba(33, 22, 15, 0.35) 100%
+  );
+}

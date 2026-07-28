@@ -4,24 +4,49 @@ import { MenuItem } from "@/lib/types";
 import { useCart } from "@/context/CartContext";
 import { siteConfig } from "@/config/site";
 import SpiceLevel from "./SpiceLevel";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
-const accentBg: Record<MenuItem["accent"], string> = {
-  chili: "bg-chili",
-  mustard: "bg-mustard",
-  leaf: "bg-leaf",
+const accentImage: Record<MenuItem["accent"], string> = {
+  chili: "https://images.unsplash.com/photo-1737816150985-a7d41389f502?auto=format&fit=crop&w=800&q=70",
+  mustard: "https://images.unsplash.com/photo-1636907229111-a8ac768fe6c9?auto=format&fit=crop&w=800&q=70",
+  leaf: "https://images.unsplash.com/photo-1608039755401-742074f0548d?auto=format&fit=crop&w=800&q=70",
 };
 
-export default function MenuCard({ item }: { item: MenuItem }) {
+const accentTint: Record<MenuItem["accent"], string> = {
+  chili: "linear-gradient(135deg, rgba(255,45,22,0.82), rgba(198,31,16,0.78))",
+  mustard: "linear-gradient(135deg, rgba(255,196,0,0.82), rgba(230,168,0,0.78))",
+  leaf: "linear-gradient(135deg, rgba(20,164,77,0.82), rgba(14,120,56,0.8))",
+};
+
+export default function MenuCard({
+  item,
+  index = 0,
+}: {
+  item: MenuItem;
+  index?: number;
+}) {
   const { lines, addItem, increment, decrement } = useCart();
   const line = lines.find((l) => l.id === item.id);
   const qty = line?.qty ?? 0;
+  const { ref, isVisible } = useScrollReveal<HTMLDivElement>();
 
   return (
-    <div className="motion-card theme-card animate-float-up group flex flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-ink/8 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-ink/10">
-      <div
-        className={`jagged-edge relative flex h-36 items-center justify-center ${accentBg[item.accent]}`}
-      >
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.26)_0_25%,transparent_25%_50%,rgba(255,255,255,0.18)_50%_75%,transparent_75%)] bg-[length:30px_30px] opacity-45" />
+    <div
+      ref={ref}
+      style={{
+        transitionDelay: isVisible ? `${Math.min(index, 8) * 70}ms` : "0ms",
+      }}
+      className={`card-premium motion-card theme-card reveal ${
+        isVisible ? "is-visible" : ""
+      } group flex flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-ink/8 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-ink/10`}
+    >
+      <div className="jagged-edge relative flex h-36 items-center justify-center overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center transition duration-500 group-hover:scale-110"
+          style={{ backgroundImage: `url(${accentImage[item.accent]})` }}
+        />
+        <div className="absolute inset-0" style={{ backgroundImage: accentTint[item.accent] }} />
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.26)_0_25%,transparent_25%_50%,rgba(255,255,255,0.18)_50%_75%,transparent_75%)] bg-[length:30px_30px] opacity-30" />
         <span className="relative text-6xl drop-shadow-[0_8px_0_rgba(0,0,0,0.12)] transition duration-300 group-hover:-rotate-6 group-hover:scale-110" aria-hidden>
           {item.emoji}
         </span>

@@ -1,11 +1,67 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { siteConfig } from "@/config/site";
 
+const slides = [
+  {
+    image:
+      "https://images.unsplash.com/photo-1608039755401-742074f0548d?auto=format&fit=crop&w=1920&q=80",
+    alt: "Crispy fried chicken wings",
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1636907229111-a8ac768fe6c9?auto=format&fit=crop&w=1920&q=80",
+    alt: "Loaded cheeseburger with fries",
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1737816150985-a7d41389f502?auto=format&fit=crop&w=1920&q=80",
+    alt: "Spicy chicken wings and fries",
+  },
+];
+
 export default function Hero() {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActive((i) => (i + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <section id="top" className="theme-dark-section relative overflow-hidden bg-ink text-cream">
+      <div className="absolute inset-0" aria-hidden>
+        {slides.map((slide, i) => (
+          <div key={slide.image} className={`hero-slide ${i === active ? "is-active" : ""}`}>
+            <div
+              className="hero-slide-img"
+              style={{ backgroundImage: `url(${slide.image})` }}
+            />
+          </div>
+        ))}
+        <div className="absolute inset-0 bg-gradient-to-b from-ink/88 via-ink/80 to-ink" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/70 via-transparent to-ink/40" />
+      </div>
+
+      <div className="absolute bottom-8 right-5 flex gap-2 md:right-8">
+        {slides.map((slide, i) => (
+          <button
+            key={slide.image}
+            onClick={() => setActive(i)}
+            aria-label={`Show slide ${i + 1}`}
+            className={`hero-slide-dot h-2 rounded-full ${
+              i === active ? "w-7 bg-mustard" : "w-2 bg-cream/40 hover:bg-cream/70"
+            }`}
+          />
+        ))}
+      </div>
+
       <div
         aria-hidden
-        className="animate-sizzle-drift pointer-events-none absolute inset-0 opacity-[0.12]"
+        className="animate-sizzle-drift pointer-events-none absolute inset-0 opacity-[0.1]"
         style={{
           backgroundImage:
             "linear-gradient(135deg, #ffc400 10%, transparent 10%, transparent 50%, #ffc400 50%, #ffc400 60%, transparent 60%, transparent 100%)",
@@ -48,7 +104,7 @@ export default function Hero() {
           </a>
           <a
             href={`https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(
-              "Hi Krazy Crunch! I'd like to place an order."
+              "Hi Krazy Crunch! I would like to place an order."
             )}`}
             target="_blank"
             rel="noopener noreferrer"
