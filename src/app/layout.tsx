@@ -34,6 +34,12 @@ export default function RootLayout({
                 } catch {
                   document.documentElement.dataset.theme = "light";
                 }
+                try {
+                  const savedPreset = localStorage.getItem("krazy-crunch-color-preset");
+                  document.documentElement.dataset.colorPreset = savedPreset || "indigo";
+                } catch {
+                  document.documentElement.dataset.colorPreset = "indigo";
+                }
               })();
             `,
           }}

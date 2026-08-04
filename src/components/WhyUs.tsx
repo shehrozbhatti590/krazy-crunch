@@ -32,7 +32,7 @@ export default function WhyUs() {
         className="absolute inset-0 bg-cover bg-center opacity-40"
         style={{
           backgroundImage:
-            "url(https://images.unsplash.com/photo-1608039755401-742074f0548d?auto=format&fit=crop&w=1600&q=75)",
+            "url(https://images.unsplash.com/photo-1608039755401-742074f0548d?auto=format&fit=crop&w=900&q=45)",
         }}
       />
       <div
@@ -40,7 +40,7 @@ export default function WhyUs() {
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(circle at 15% 15%, rgba(255,196,0,0.28), transparent 45%), radial-gradient(circle at 88% 85%, rgba(255,45,22,0.26), transparent 50%), linear-gradient(180deg, rgba(15,10,7,0.55) 0%, rgba(15,10,7,0.82) 55%, rgba(15,10,7,0.95) 100%)",
+            "radial-gradient(circle at 15% 15%, color-mix(in srgb, var(--color-mustard) 26%, transparent), transparent 45%), radial-gradient(circle at 88% 85%, color-mix(in srgb, var(--color-chili) 24%, transparent), transparent 50%), linear-gradient(180deg, rgba(15,10,7,0.55) 0%, rgba(15,10,7,0.82) 55%, rgba(15,10,7,0.95) 100%)",
         }}
       />
 

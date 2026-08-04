@@ -19,8 +19,8 @@ export const siteConfig = {
     { day: "Wednesday", time: "12:00 PM - 3:00 AM" },
     { day: "Thursday", time: "12:00 PM - 3:00 AM" },
     { day: "Friday", time: "12:00 PM - 3:00 AM" },
-    { day: "Saturday", time: "12:00 PM - 1:00 AM" },
-    { day: "Sunday", time: "12:00 PM - 1:00 AM" },
+    { day: "Saturday", time: "12:00 PM - 3:00 AM" },
+    { day: "Sunday", time: "12:00 PM - 3:00 AM" },
   ],
 
   socials: {

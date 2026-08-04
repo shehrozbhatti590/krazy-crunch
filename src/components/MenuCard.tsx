@@ -7,15 +7,15 @@ import SpiceLevel from "./SpiceLevel";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const accentImage: Record<MenuItem["accent"], string> = {
-  chili: "https://images.unsplash.com/photo-1737816150985-a7d41389f502?auto=format&fit=crop&w=800&q=70",
-  mustard: "https://images.unsplash.com/photo-1636907229111-a8ac768fe6c9?auto=format&fit=crop&w=800&q=70",
-  leaf: "https://images.unsplash.com/photo-1608039755401-742074f0548d?auto=format&fit=crop&w=800&q=70",
+  chili: "https://images.unsplash.com/photo-1737816150985-a7d41389f502?auto=format&fit=crop&w=500&q=50",
+  mustard: "https://images.unsplash.com/photo-1636907229111-a8ac768fe6c9?auto=format&fit=crop&w=500&q=50",
+  leaf: "https://images.unsplash.com/photo-1608039755401-742074f0548d?auto=format&fit=crop&w=500&q=50",
 };
 
 const accentTint: Record<MenuItem["accent"], string> = {
-  chili: "linear-gradient(135deg, rgba(255,45,22,0.82), rgba(198,31,16,0.78))",
-  mustard: "linear-gradient(135deg, rgba(255,196,0,0.82), rgba(230,168,0,0.78))",
-  leaf: "linear-gradient(135deg, rgba(20,164,77,0.82), rgba(14,120,56,0.8))",
+  chili: "linear-gradient(160deg, rgba(138,36,50,0.55), rgba(90,20,32,0.75))",
+  mustard: "linear-gradient(160deg, rgba(184,134,11,0.5), rgba(120,86,8,0.72))",
+  leaf: "linear-gradient(160deg, rgba(63,125,74,0.5), rgba(38,84,46,0.72))",
 };
 
 export default function MenuCard({
@@ -38,37 +38,39 @@ export default function MenuCard({
       }}
       className={`card-premium motion-card theme-card reveal ${
         isVisible ? "is-visible" : ""
-      } group flex flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-ink/8 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-ink/10`}
+      } group flex flex-col overflow-hidden rounded-2xl border border-ink/[0.06] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-[0_28px_50px_-24px_rgba(0,0,0,0.35)]`}
     >
-      <div className="jagged-edge relative flex h-36 items-center justify-center overflow-hidden">
+      <div className="relative h-44 w-full overflow-hidden">
         <div
-          className="absolute inset-0 bg-cover bg-center transition duration-500 group-hover:scale-110"
+          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-[1.08]"
           style={{ backgroundImage: `url(${accentImage[item.accent]})` }}
         />
         <div className="absolute inset-0" style={{ backgroundImage: accentTint[item.accent] }} />
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.26)_0_25%,transparent_25%_50%,rgba(255,255,255,0.18)_50%_75%,transparent_75%)] bg-[length:30px_30px] opacity-30" />
-        <span className="relative text-6xl drop-shadow-[0_8px_0_rgba(0,0,0,0.12)] transition duration-300 group-hover:-rotate-6 group-hover:scale-110" aria-hidden>
-          {item.emoji}
-        </span>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent" />
+
         {item.badge && (
-          <span className="krazy-bite absolute left-3 top-3 rounded-md bg-ink px-2.5 py-1 font-body text-[10px] font-extrabold uppercase tracking-wider text-mustard">
+          <span className="absolute left-3 top-3 rounded-full bg-ink/85 px-3 py-1 font-body text-[10px] font-bold uppercase tracking-wider text-mustard shadow-sm backdrop-blur-sm">
             {item.badge}
           </span>
         )}
+
+        <span className="absolute bottom-3 right-3 flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-xl shadow-lg backdrop-blur-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
+          {item.emoji}
+        </span>
       </div>
 
-      <div className="flex flex-1 flex-col gap-3 p-4">
-        <div className="flex items-start justify-between gap-2">
+      <div className="flex flex-1 flex-col gap-3 p-5">
+        <div className="flex items-start justify-between gap-3">
           <h3 className="font-display text-xl leading-tight tracking-wide text-ink">
             {item.name}
           </h3>
           <SpiceLevel level={item.spiceLevel ?? 0} />
         </div>
 
-        <p className="font-body text-sm leading-6 text-ink/62">{item.description}</p>
+        <p className="font-body text-sm leading-6 text-ink/58">{item.description}</p>
 
-        <div className="mt-auto flex items-center justify-between gap-3 pt-3">
-          <span className="font-display text-2xl leading-none text-chili">
+        <div className="mt-auto flex items-center justify-between gap-3 border-t border-ink/[0.07] pt-4">
+          <span className="font-display text-2xl leading-none tracking-wide text-chili">
             {siteConfig.currency}
             {item.price.toLocaleString()}
           </span>
@@ -76,19 +78,19 @@ export default function MenuCard({
           {qty === 0 ? (
             <button
               onClick={() => addItem(item)}
-              className="cta-shine flex items-center gap-2 rounded-full bg-ink py-1.5 pl-2 pr-4 font-body text-xs font-extrabold uppercase tracking-wider text-cream shadow-md shadow-ink/15 transition hover:-translate-y-0.5 hover:bg-chili active:scale-95"
+              className="cta-shine flex items-center gap-2 rounded-full bg-ink py-2 pl-2 pr-4 font-body text-xs font-extrabold uppercase tracking-wider text-cream shadow-sm transition duration-300 hover:-translate-y-0.5 hover:bg-mustard hover:text-[#141225] hover:shadow-lg active:scale-95"
             >
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-mustard text-sm leading-none text-ink">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-mustard text-sm leading-none text-ink transition-colors group-hover:bg-[#141225] group-hover:text-mustard">
                 +
               </span>
               Add
             </button>
           ) : (
-            <div className="theme-muted-card flex items-center gap-1 rounded-xl bg-cream-dim p-1">
+            <div className="theme-muted-card flex items-center gap-1 rounded-full bg-cream-dim p-1">
               <button
                 onClick={() => decrement(item.id)}
                 aria-label={`Remove one ${item.name}`}
-                className="flex h-8 w-8 items-center justify-center rounded-lg font-bold text-chili transition hover:bg-white active:scale-95"
+                className="flex h-8 w-8 items-center justify-center rounded-full font-bold text-chili transition hover:bg-white active:scale-95"
               >
                 -
               </button>
@@ -98,7 +100,7 @@ export default function MenuCard({
               <button
                 onClick={() => increment(item.id)}
                 aria-label={`Add one more ${item.name}`}
-                className="flex h-8 w-8 items-center justify-center rounded-lg font-bold text-chili transition hover:bg-white active:scale-95"
+                className="flex h-8 w-8 items-center justify-center rounded-full font-bold text-chili transition hover:bg-white active:scale-95"
               >
                 +
               </button>

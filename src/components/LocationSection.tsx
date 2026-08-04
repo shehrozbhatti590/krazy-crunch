@@ -9,7 +9,7 @@ export default function LocationSection() {
           className="location-photo"
           style={{
             backgroundImage:
-              "url(https://images.unsplash.com/photo-1608039755401-742074f0548d?auto=format&fit=crop&w=1600&q=70)",
+              "url(https://images.unsplash.com/photo-1608039755401-742074f0548d?auto=format&fit=crop&w=700&q=40)",
           }}
         />
         <div aria-hidden className="location-photo-overlay" />
