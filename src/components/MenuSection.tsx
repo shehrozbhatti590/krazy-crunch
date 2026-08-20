@@ -1,58 +1,89 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { categories, menuItems } from "@/data/menu";
-import { MenuCategory } from "@/lib/types";
+import { useMenuItems } from "@/hooks/useMenuItems";
 import MenuCard from "./MenuCard";
+import type { DbMenuItem } from "@/lib/menu-types";
 
-const AUTOPLAY_MS = 4000;
+function toCardItem(item: DbMenuItem) {
+  return {
+    id: item.id,
+    name: item.name,
+    description: item.description,
+    price: item.price,
+    category: item.category,
+    spiceLevel: item.spice_level as 0 | 1 | 2 | 3,
+    badge: item.badge ?? undefined,
+    emoji: item.emoji,
+    image: item.image_url,
+    accent: item.accent,
+  };
+}
 
 export default function MenuSection() {
-  const [active, setActive] = useState<MenuCategory>("Deals");
-  const trackRef = useRef<HTMLDivElement>(null);
-  const autoplayRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const { items: dbItems, categories, loading } = useMenuItems(false);
+  const [active, setActive] = useState<string>("");
+  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const isClickScrolling = useRef(false);
+  const clickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const items = useMemo(
-    () => menuItems.filter((item) => item.category === active),
-    [active]
-  );
-
-  const scrollByCards = (direction: 1 | -1) => {
-    const track = trackRef.current;
-    if (!track) return;
-    const card = track.querySelector<HTMLElement>("[data-menu-card]");
-    const gap = 20;
-    const cardWidth = card ? card.offsetWidth + gap : track.clientWidth * 0.85;
-    const maxScroll = track.scrollWidth - track.clientWidth;
-    const next = track.scrollLeft + direction * cardWidth;
-
-    if (next < 4) {
-      track.scrollTo({ left: maxScroll, behavior: "smooth" });
-    } else if (next > maxScroll - 4) {
-      track.scrollTo({ left: 0, behavior: "smooth" });
-    } else {
-      track.scrollBy({ left: direction * cardWidth, behavior: "smooth" });
-    }
-  };
-
-  const stopAutoplay = () => {
-    if (autoplayRef.current) {
-      clearInterval(autoplayRef.current);
-      autoplayRef.current = null;
-    }
-  };
-
-  const startAutoplay = () => {
-    stopAutoplay();
-    autoplayRef.current = setInterval(() => scrollByCards(1), AUTOPLAY_MS);
-  };
+  const itemsByCategory = useMemo(() => {
+    const map: Record<string, DbMenuItem[]> = {};
+    categories.forEach((cat) => {
+      map[cat] = dbItems.filter((item) => item.category === cat);
+    });
+    return map;
+  }, [dbItems, categories]);
 
   useEffect(() => {
-    trackRef.current?.scrollTo({ left: 0 });
-    startAutoplay();
-    return stopAutoplay;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, items.length]);
+    if (!active && categories.length > 0) {
+      setActive(categories[0]);
+    }
+  }, [active, categories]);
+
+  useEffect(() => {
+    if (categories.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (isClickScrolling.current) return;
+
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+        if (visible.length > 0) {
+          const cat = visible[0].target.getAttribute("data-category");
+          if (cat) setActive(cat);
+        }
+      },
+      { rootMargin: "-140px 0px -55% 0px", threshold: [0, 0.1] }
+    );
+
+    categories.forEach((cat) => {
+      const el = sectionRefs.current[cat];
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [categories]);
+
+  function goToCategory(cat: string) {
+    setActive(cat);
+    isClickScrolling.current = true;
+    if (clickTimeoutRef.current) clearTimeout(clickTimeoutRef.current);
+
+    const el = sectionRefs.current[cat];
+    if (el) {
+      const offset = 132;
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: "smooth" });
+    }
+
+    clickTimeoutRef.current = setTimeout(() => {
+      isClickScrolling.current = false;
+    }, 800);
+  }
 
   return (
     <section
@@ -70,7 +101,7 @@ export default function MenuSection() {
       <div aria-hidden className="menu-bg-overlay" />
 
       <div className="relative">
-        <div className="animate-pop-in mb-12 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+        <div className="animate-pop-in mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div className="max-w-xl">
             <span className="font-body text-xs font-extrabold uppercase tracking-[0.25em] text-chili">
               The Menu
@@ -86,11 +117,11 @@ export default function MenuSection() {
           </p>
         </div>
 
-        <div className="animate-pop-in stagger-1 mb-10 flex gap-1.5 overflow-x-auto rounded-full border border-ink/[0.06] bg-white/70 p-1.5 shadow-sm backdrop-blur-md [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="sticky top-14 z-20 -mx-1 mb-2 flex gap-1.5 overflow-x-auto rounded-full border border-ink/[0.06] bg-white/90 p-1.5 shadow-md backdrop-blur-md sm:top-16 md:top-[72px] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {categories.map((cat) => (
             <button
               key={cat}
-              onClick={() => setActive(cat)}
+              onClick={() => goToCategory(cat)}
               className={`shrink-0 rounded-full px-5 py-2.5 font-body text-xs font-extrabold uppercase tracking-wide transition-all duration-300 active:scale-95 ${
                 active === cat
                   ? "bg-ink text-mustard shadow-md"
@@ -102,51 +133,35 @@ export default function MenuSection() {
           ))}
         </div>
 
-        <div className="relative px-1 md:px-2">
-          <div
-            ref={trackRef}
-            onMouseEnter={stopAutoplay}
-            onMouseLeave={startAutoplay}
-            className="menu-carousel flex gap-5 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          >
-            {items.map((item, index) => (
+        {loading ? (
+          <p className="py-10 text-center font-body text-sm text-ink/40">Loading menu...</p>
+        ) : categories.length === 0 ? (
+          <p className="py-10 text-center font-body text-sm text-ink/40">
+            No menu items yet.
+          </p>
+        ) : (
+          <div className="mt-8 flex flex-col gap-14">
+            {categories.map((cat) => (
               <div
-                key={item.id}
-                data-menu-card
-                className="menu-carousel-item w-[82%] shrink-0 sm:w-[46%] lg:w-[31.5%]"
+                key={cat}
+                data-category={cat}
+                ref={(el) => {
+                  sectionRefs.current[cat] = el;
+                }}
+                className="scroll-mt-32"
               >
-                <MenuCard item={item} index={index} />
+                <h3 className="mb-5 font-display text-2xl tracking-wide text-ink md:text-3xl">
+                  {cat}
+                </h3>
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {itemsByCategory[cat].map((item, index) => (
+                    <MenuCard key={item.id} item={toCardItem(item)} index={index} />
+                  ))}
+                </div>
               </div>
             ))}
           </div>
-
-          <button
-            type="button"
-            aria-label="Previous items"
-            onClick={() => {
-              scrollByCards(-1);
-              startAutoplay();
-            }}
-            className="menu-arrow menu-arrow-left"
-          >
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            aria-label="Next items"
-            onClick={() => {
-              scrollByCards(1);
-              startAutoplay();
-            }}
-            className="menu-arrow menu-arrow-right"
-          >
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          </button>
-        </div>
+        )}
       </div>
     </section>
   );

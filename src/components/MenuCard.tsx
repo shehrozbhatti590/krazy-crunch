@@ -1,22 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { MenuItem } from "@/lib/types";
 import { useCart } from "@/context/CartContext";
 import { siteConfig } from "@/config/site";
 import SpiceLevel from "./SpiceLevel";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
-
-const accentImage: Record<MenuItem["accent"], string> = {
-  chili: "https://images.unsplash.com/photo-1737816150985-a7d41389f502?auto=format&fit=crop&w=500&q=50",
-  mustard: "https://images.unsplash.com/photo-1636907229111-a8ac768fe6c9?auto=format&fit=crop&w=500&q=50",
-  leaf: "https://images.unsplash.com/photo-1608039755401-742074f0548d?auto=format&fit=crop&w=500&q=50",
-};
-
-const accentTint: Record<MenuItem["accent"], string> = {
-  chili: "linear-gradient(160deg, rgba(138,36,50,0.55), rgba(90,20,32,0.75))",
-  mustard: "linear-gradient(160deg, rgba(184,134,11,0.5), rgba(120,86,8,0.72))",
-  leaf: "linear-gradient(160deg, rgba(63,125,74,0.5), rgba(38,84,46,0.72))",
-};
 
 export default function MenuCard({
   item,
@@ -40,12 +29,11 @@ export default function MenuCard({
         isVisible ? "is-visible" : ""
       } group flex flex-col overflow-hidden rounded-2xl border border-ink/[0.06] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-[0_28px_50px_-24px_rgba(0,0,0,0.35)]`}
     >
-      <div className="relative h-44 w-full overflow-hidden">
+      <Link href={`/menu/${item.id}`} className="relative block h-44 w-full overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-[1.08]"
-          style={{ backgroundImage: `url(${accentImage[item.accent]})` }}
+          style={{ backgroundImage: `url(${item.image})` }}
         />
-        <div className="absolute inset-0" style={{ backgroundImage: accentTint[item.accent] }} />
         <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent" />
 
         {item.badge && (
@@ -57,13 +45,19 @@ export default function MenuCard({
         <span className="absolute bottom-3 right-3 flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-xl shadow-lg backdrop-blur-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
           {item.emoji}
         </span>
-      </div>
+
+        <span className="absolute bottom-3 left-3 rounded-full bg-white/90 px-3 py-1 font-body text-[10px] font-bold uppercase tracking-wide text-ink opacity-0 shadow-sm backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-100">
+          View details
+        </span>
+      </Link>
 
       <div className="flex flex-1 flex-col gap-3 p-5">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="font-display text-xl leading-tight tracking-wide text-ink">
-            {item.name}
-          </h3>
+          <Link href={`/menu/${item.id}`} className="hover:text-chili">
+            <h3 className="font-display text-xl leading-tight tracking-wide text-ink">
+              {item.name}
+            </h3>
+          </Link>
           <SpiceLevel level={item.spiceLevel ?? 0} />
         </div>
 

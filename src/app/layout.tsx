@@ -36,9 +36,9 @@ export default function RootLayout({
                 }
                 try {
                   const savedPreset = localStorage.getItem("krazy-crunch-color-preset");
-                  document.documentElement.dataset.colorPreset = savedPreset || "indigo";
+                  document.documentElement.dataset.colorPreset = savedPreset || "yellow";
                 } catch {
-                  document.documentElement.dataset.colorPreset = "indigo";
+                  document.documentElement.dataset.colorPreset = "yellow";
                 }
               })();
             `,

@@ -14,7 +14,7 @@ type PresetId = (typeof presets)[number]["id"];
 
 export default function ColorPresetSwitcher() {
   const [open, setOpen] = useState(false);
-  const [active, setActive] = useState<PresetId>("indigo");
+  const [active, setActive] = useState<PresetId>("yellow");
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

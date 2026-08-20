@@ -16,6 +16,8 @@ whatsappNumber: "923001234567",
 Country code + number likhein, koi `+`, space ya dash nahi. Pakistan ke liye
 `92` se shuru hoga (e.g. `923001234567`).
 
+my sql psswrd Falconz@786%''
+
 Isi file mein aap ye bhi edit kar sakte hain:
 - `address`, `city`, `phoneDisplay` — location section aur footer ke liye
 - `hours` — opening hours

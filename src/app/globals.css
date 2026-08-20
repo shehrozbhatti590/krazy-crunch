@@ -3,10 +3,10 @@
 :root {
   --color-ink: #17151c;
   --color-ink-soft: #48454f;
-  --color-chili: #c1502e;
-  --color-chili-dark: #9c3d21;
-  --color-mustard: #6172f3;
-  --color-mustard-dark: #3538cd;
+  --color-chili: #c2410c;
+  --color-chili-dark: #9a3412;
+  --color-mustard: #eab308;
+  --color-mustard-dark: #ca8a04;
   --color-cream: #f7f7f9;
   --color-cream-dim: #ececf0;
   --color-leaf: #12b76a;
@@ -14,17 +14,17 @@
   --color-border: rgba(23, 21, 28, 0.08);
   --page-bg-start: #fbfbfd;
   --page-bg-end: #f3f3f7;
-  --page-glow: rgba(97, 114, 243, 0.16);
+  --page-glow: rgba(234, 179, 8, 0.2);
   --shadow-color: 23, 21, 28;
 }
 
 html[data-theme="dark"] {
   --color-ink: #eef0f4;
   --color-ink-soft: #a0aec0;
-  --color-chili: #e2703f;
-  --color-chili-dark: #b8562d;
-  --color-mustard: #8b98f6;
-  --color-mustard-dark: #6172f3;
+  --color-chili: #fb923c;
+  --color-chili-dark: #f97316;
+  --color-mustard: #facc15;
+  --color-mustard-dark: #eab308;
   --color-cream: #0e0e12;
   --color-cream-dim: #1a1a20;
   --color-leaf: #6ce9a6;
@@ -32,7 +32,7 @@ html[data-theme="dark"] {
   --color-border: rgba(238, 240, 244, 0.1);
   --page-bg-start: #0b0b0f;
   --page-bg-end: #131318;
-  --page-glow: rgba(97, 114, 243, 0.14);
+  --page-glow: rgba(250, 204, 21, 0.16);
   --shadow-color: 0, 0, 0;
   color-scheme: dark;
 }
@@ -780,4 +780,46 @@ html[data-theme="dark"] .menu-arrow {
   .mobile-nav-panel {
     animation: none;
   }
+}
+
+/* Join Community: WhatsApp pulse ring */
+@keyframes join-pulse-ring {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.55;
+  }
+  70%,
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+
+.join-pulse-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid var(--color-leaf);
+  animation: join-pulse-ring 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.join-pulse-ring-delay {
+  animation-delay: 1.2s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .join-pulse-ring {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* Header surface: always fixed dark, independent of any theme variable
+   (prevents cascade edge-cases from ever making the header look light) */
+.header-surface {
+  background-color: rgba(9, 12, 20, 0.98);
+}
+
+.header-surface-scrolled {
+  background-color: rgba(9, 12, 20, 1);
 }
