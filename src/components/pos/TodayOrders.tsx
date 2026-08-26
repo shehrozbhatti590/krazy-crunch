@@ -66,9 +66,19 @@ export default function TodayOrders({
     };
   }, [fetchOrders]);
 
-  async function cancelOrder(id: string) {
-    await supabase.from("orders").update({ status: "cancelled" }).eq("id", id);
+  async function cancelOrder(order: PosOrder) {
+    if (
+      !confirm(
+        `Cancel order #${order.order_number} (Rs.${Number(order.subtotal).toLocaleString()})? This cannot be undone.`
+      )
+    )
+      return;
+    await supabase.from("orders").update({ status: "cancelled" }).eq("id", order.id);
     fetchOrders();
+  }
+
+  function printReceipt(id: string) {
+    window.open(`/pos/receipt/${id}`, "_blank", "width=380,height=700");
   }
 
   return (
@@ -81,7 +91,7 @@ export default function TodayOrders({
         <p className="mt-4 font-body text-sm text-[#f5f4fb]/40">No orders yet today.</p>
       ) : (
         <div className="mt-4 overflow-x-auto rounded-2xl border border-[#f5f4fb]/10">
-          <table className="w-full min-w-[640px] border-collapse text-left">
+          <table className="w-full min-w-[720px] border-collapse text-left">
             <thead>
               <tr className="border-b border-[#f5f4fb]/10 bg-[#14111a]">
                 <th className="px-4 py-3 font-body text-[10px] font-extrabold uppercase tracking-wider text-[#f5f4fb]/45">
@@ -103,7 +113,7 @@ export default function TodayOrders({
                   Total
                 </th>
                 <th className="px-4 py-3 text-right font-body text-[10px] font-extrabold uppercase tracking-wider text-[#f5f4fb]/45">
-                  Status
+                  Actions
                 </th>
               </tr>
             </thead>
@@ -137,18 +147,26 @@ export default function TodayOrders({
                     Rs.{Number(order.subtotal).toLocaleString()}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    {order.status === "completed" ? (
+                    <div className="flex justify-end gap-1.5">
                       <button
-                        onClick={() => cancelOrder(order.id)}
-                        className="rounded-full border border-chili/30 px-3 py-1 font-body text-[10px] font-bold uppercase text-chili/80 transition hover:bg-chili/10"
+                        onClick={() => printReceipt(order.id)}
+                        className="rounded-full border border-mustard/30 px-3 py-1 font-body text-[10px] font-bold uppercase text-mustard/90 transition hover:bg-mustard/10"
                       >
-                        Cancel
+                        Print
                       </button>
-                    ) : (
-                      <span className="font-body text-[10px] font-bold uppercase text-[#f5f4fb]/35">
-                        Cancelled
-                      </span>
-                    )}
+                      {order.status === "completed" ? (
+                        <button
+                          onClick={() => cancelOrder(order)}
+                          className="rounded-full border border-chili/30 px-3 py-1 font-body text-[10px] font-bold uppercase text-chili/80 transition hover:bg-chili/10"
+                        >
+                          Cancel
+                        </button>
+                      ) : (
+                        <span className="rounded-full px-3 py-1 font-body text-[10px] font-bold uppercase text-[#f5f4fb]/35">
+                          Cancelled
+                        </span>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

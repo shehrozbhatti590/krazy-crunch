@@ -823,3 +823,31 @@ html[data-theme="dark"] .menu-arrow {
 .header-surface-scrolled {
   background-color: rgba(9, 12, 20, 1);
 }
+
+
+/* ── Print styles (receipts & reports) ─────────────────────────────── */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+  }
+
+  .receipt-page {
+    background: #fff !important;
+    padding: 0 !important;
+  }
+
+  .receipt-slip {
+    box-shadow: none !important;
+    width: 100% !important;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  @page {
+    margin: 8mm;
+  }
+}

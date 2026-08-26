@@ -23,6 +23,7 @@ export default function OrderBuilder({ onOrderCreated }: { onOrderCreated: () =>
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; text: string } | null>(
     null
   );
+  const [lastOrderId, setLastOrderId] = useState<string | null>(null);
   const [customOpen, setCustomOpen] = useState(false);
   const [customName, setCustomName] = useState("");
   const [customPrice, setCustomPrice] = useState("");
@@ -77,28 +78,41 @@ export default function OrderBuilder({ onOrderCreated }: { onOrderCreated: () =>
     if (cart.length === 0) return;
     setSubmitting(true);
     setFeedback(null);
+    setLastOrderId(null);
 
-    const { error } = await supabase.from("orders").insert({
-      items: cart,
-      subtotal: total,
-      payment_method: paymentMethod,
-      order_type: orderType,
-      status: "completed",
-      notes: notes.trim() || null,
-      staff_name: staffName.trim() || null,
-    });
+    const { data, error } = await supabase
+      .from("orders")
+      .insert({
+        items: cart,
+        subtotal: total,
+        payment_method: paymentMethod,
+        order_type: orderType,
+        status: "completed",
+        notes: notes.trim() || null,
+        staff_name: staffName.trim() || null,
+      })
+      .select("id")
+      .single();
 
     setSubmitting(false);
 
-    if (error) {
-      setFeedback({ type: "error", text: `Could not save order: ${error.message}` });
+    if (error || !data) {
+      setFeedback({
+        type: "error",
+        text: `Could not save order: ${error?.message ?? "unknown error"}`,
+      });
       return;
     }
 
     setFeedback({ type: "success", text: "Order saved." });
+    setLastOrderId(data.id);
     resetOrder();
     onOrderCreated();
-    setTimeout(() => setFeedback(null), 2500);
+  }
+
+  function printLastReceipt() {
+    if (!lastOrderId) return;
+    window.open(`/pos/receipt/${lastOrderId}`, "_blank", "width=380,height=700");
   }
 
   return (
@@ -318,13 +332,27 @@ export default function OrderBuilder({ onOrderCreated }: { onOrderCreated: () =>
         </div>
 
         {feedback && (
-          <p
-            className={`text-center font-body text-xs font-bold ${
-              feedback.type === "success" ? "text-leaf" : "text-chili"
+          <div
+            className={`flex flex-col items-center gap-2 rounded-lg p-2.5 text-center ${
+              feedback.type === "success" ? "bg-leaf/10" : "bg-chili/10"
             }`}
           >
-            {feedback.text}
-          </p>
+            <p
+              className={`font-body text-xs font-bold ${
+                feedback.type === "success" ? "text-leaf" : "text-chili"
+              }`}
+            >
+              {feedback.text}
+            </p>
+            {feedback.type === "success" && lastOrderId && (
+              <button
+                onClick={printLastReceipt}
+                className="rounded-lg bg-mustard px-4 py-2 font-body text-[11px] font-extrabold uppercase tracking-wide text-[#17110d] transition hover:brightness-95"
+              >
+                Print Receipt
+              </button>
+            )}
+          </div>
         )}
 
         <button
