@@ -11,8 +11,8 @@ const points = [
   },
   {
     icon: "\u{1F6F5}",
-    title: "Fast, Hot Delivery",
-    text: "Sealed and rushed out so it reaches you as hot as the fryer.",
+    title: "Free Delivery",
+    text: "No delivery fee, no minimum order - sealed hot and rushed to your door.",
   },
   {
     icon: "\u{1F4AC}",

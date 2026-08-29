@@ -149,7 +149,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         : `Delivery: FREE`,
       `*Total: ${currency}${total.toLocaleString()}*`,
       "",
-      `Naam: ${customer.name}`,
+      `Name: ${customer.name}`,
       `Phone: ${customer.phone}`,
       `Address: ${customer.address}`,
       customer.notes ? `Notes: ${customer.notes}` : "",

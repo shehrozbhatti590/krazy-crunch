@@ -26,7 +26,7 @@ Isi file mein aap ye bhi edit kar sakte hain:
 
 ## Menu edit karna
 
-Sara menu `src/data/menu.ts` mein hai. Har item ka naam, price, category,
+Sara menu `src/data/menu.ts` mein hai. Har item ka name, price, category,
 description, spice level aur emoji/icon change kar sakte hain, ya naye items
 add kar sakte hain — bas array mein object add karein.
 
@@ -72,7 +72,7 @@ src/
 1. Customer "Add" dabata hai -> item cart mein add hota hai (localStorage mein
    save hota hai, refresh pe bhi cart nahi ukhadta)
 2. Cart icon dabane par drawer khulta hai -> items, quantity, total dikhta hai
-3. Customer apna naam, phone, address bharta hai
+3. Customer apna name, phone, address bharta hai
 4. "Order via WhatsApp" dabane par ek formatted message ke sath
    wa.me/<number>?text=... link naye tab mein khulta hai -> order pehle se
    type hota hai, customer sirf Send dabata hai

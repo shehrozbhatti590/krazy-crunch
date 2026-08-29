@@ -11,7 +11,7 @@ export const siteConfig = {
   // Shown in footer / location section. Edit to your real address.
   address: "Shop 3, Ashraf Colony Dhamial Road, Rawalpindi, Punjab",
   city: "Rawalpindi",
-  phoneDisplay: "0304 5576590",
+  phoneDisplay: "0307 5336271",
 
   hours: [
     { day: "Monday", time: "12:00 PM - 3:00 AM" },
@@ -24,11 +24,12 @@ export const siteConfig = {
   ],
 
   socials: {
-    instagram: "https://instagram.com/krazycrunch",
-    facebook: "https://facebook.com/krazycrunch",
+    instagram: "https://www.instagram.com/krazycrunch.pk/",
+    facebook: "https://www.facebook.com/share/1EZTuH6GR2/",
   },
 
   currency: "Rs.",
-  deliveryFee: 100,
+  deliveryFee: 0,
+  // deliveryFee: 100,
   minOrderForFreeDelivery: 1500,
 };

@@ -25,6 +25,10 @@ export default function CartDrawer() {
   const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
   const [touched, setTouched] = useState(false);
 
+  const nameError = touched && !name.trim() ? "Please enter your name." : "";
+  const phoneError = touched && !phone.trim() ? "Please enter a phone number." : "";
+  const addressError = touched && !address.trim() ? "Please enter a delivery address." : "";
+
   const canCheckout = lines.length > 0 && name.trim() && phone.trim() && address.trim();
 
   function handleCheckout() {
@@ -32,6 +36,14 @@ export default function CartDrawer() {
     if (!canCheckout) return;
     const url = buildWhatsAppUrl({ name, phone, address, notes, paymentMethod });
     window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  function fieldClasses(hasError: boolean) {
+    return `rounded-xl border bg-white px-4 py-3 font-body text-sm font-medium outline-none transition focus:ring-2 ${
+      hasError
+        ? "border-chili ring-1 ring-chili/40 focus:ring-chili/40"
+        : "border-ink/10 ring-chili/30"
+    }`;
   }
 
   return (
@@ -130,33 +142,66 @@ export default function CartDrawer() {
               <span className="font-body text-xs font-extrabold uppercase tracking-wider text-ink/50">
                 Delivery Details
               </span>
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Full name"
-                className="rounded-xl border border-ink/10 bg-white px-4 py-3 font-body text-sm font-medium outline-none ring-chili/30 transition focus:ring-2"
-              />
-              <input
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="Phone number"
-                inputMode="tel"
-                className="rounded-xl border border-ink/10 bg-white px-4 py-3 font-body text-sm font-medium outline-none ring-chili/30 transition focus:ring-2"
-              />
-              <textarea
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="Delivery address"
-                rows={2}
-                className="resize-none rounded-xl border border-ink/10 bg-white px-4 py-3 font-body text-sm font-medium outline-none ring-chili/30 transition focus:ring-2"
-              />
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Order notes (optional) - e.g. less spicy, no onions"
-                rows={2}
-                className="resize-none rounded-xl border border-ink/10 bg-white px-4 py-3 font-body text-sm font-medium outline-none ring-chili/30 transition focus:ring-2"
-              />
+
+              <div className="flex flex-col gap-1">
+                <label className="flex items-center gap-1 font-body text-[11px] font-bold uppercase tracking-wide text-ink/45">
+                  Full name <span className="text-chili">*</span>
+                </label>
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="e.g. Ahmed Khan"
+                  className={fieldClasses(!!nameError)}
+                />
+                {nameError && (
+                  <p className="font-body text-xs font-semibold text-chili">{nameError}</p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="flex items-center gap-1 font-body text-[11px] font-bold uppercase tracking-wide text-ink/45">
+                  Phone number <span className="text-chili">*</span>
+                </label>
+                <input
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="e.g. 0300 1234567"
+                  inputMode="tel"
+                  className={fieldClasses(!!phoneError)}
+                />
+                {phoneError && (
+                  <p className="font-body text-xs font-semibold text-chili">{phoneError}</p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="flex items-center gap-1 font-body text-[11px] font-bold uppercase tracking-wide text-ink/45">
+                  Delivery address <span className="text-chili">*</span>
+                </label>
+                <textarea
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="House #, street, area..."
+                  rows={2}
+                  className={`resize-none ${fieldClasses(!!addressError)}`}
+                />
+                {addressError && (
+                  <p className="font-body text-xs font-semibold text-chili">{addressError}</p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="font-body text-[11px] font-bold uppercase tracking-wide text-ink/45">
+                  Order notes (optional)
+                </label>
+                <textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="e.g. less spicy, no onions"
+                  rows={2}
+                  className="resize-none rounded-xl border border-ink/10 bg-white px-4 py-3 font-body text-sm font-medium outline-none ring-chili/30 transition focus:ring-2"
+                />
+              </div>
 
               <div className="flex gap-2">
                 {["Cash on Delivery", "Online Transfer"].map((method) => (
@@ -173,12 +218,6 @@ export default function CartDrawer() {
                   </button>
                 ))}
               </div>
-
-              {touched && !canCheckout && (
-                <p className="font-body text-xs font-semibold text-chili">
-                  Please fill in name, phone and address to continue.
-                </p>
-              )}
             </div>
           )}
         </div>

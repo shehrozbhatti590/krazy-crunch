@@ -15,6 +15,7 @@ export interface PosOrder {
   order_number: number;
   items: OrderLineItem[];
   subtotal: number;
+  delivery_fee: number;
   payment_method: PaymentMethod;
   order_type: OrderType;
   status: OrderStatus;

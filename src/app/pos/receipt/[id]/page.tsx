@@ -53,6 +53,8 @@ export default function ReceiptPage() {
   }
 
   const createdAt = new Date(order.created_at);
+  const deliveryFee = Number(order.delivery_fee ?? 0);
+  const itemsTotal = order.items.reduce((sum, line) => sum + line.qty * line.price, 0);
 
   return (
     <div className="receipt-page min-h-screen bg-[#0b0a0f] py-8 print:py-0" style={{ colorScheme: "light" }}>
@@ -128,6 +130,20 @@ export default function ReceiptPage() {
         ))}
 
         <div className="my-3 border-t border-dashed" style={{ borderColor: "#141414" }} />
+
+        {order.order_type === "delivery" && (
+          <>
+            <div className="flex justify-between">
+              <span>Items Subtotal</span>
+              <span>Rs.{itemsTotal.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Delivery Fee</span>
+              <span>{deliveryFee === 0 ? "FREE" : `Rs.${deliveryFee.toLocaleString()}`}</span>
+            </div>
+            <div className="my-1.5 border-t border-dashed" style={{ borderColor: "#141414" }} />
+          </>
+        )}
 
         <div className="flex justify-between text-base font-bold">
           <span>TOTAL</span>

@@ -33,6 +33,7 @@ export default function Hero() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoaded((prev) => (prev.has(active) ? prev : new Set(prev).add(active)));
   }, [active]);
 
@@ -68,9 +69,14 @@ export default function Hero() {
       </div>
 
       <div className="relative mx-auto flex max-w-6xl flex-col items-start px-5 pb-20 pt-14 md:px-8 md:pb-28 md:pt-20">
-        <span className="hero-badge animate-pop-in mb-5 inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-body text-xs font-extrabold uppercase tracking-[0.18em]">
-          <span aria-hidden>{"\u{1F525}"}</span> Fresh oil daily - {siteConfig.city}
-        </span>
+        <div className="animate-pop-in mb-5 flex flex-wrap items-center gap-2">
+          <span className="hero-badge inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-body text-xs font-extrabold uppercase tracking-[0.18em]">
+            <span aria-hidden>{"\u{1F525}"}</span> Fresh oil daily - {siteConfig.city}
+          </span>
+          <span className="inline-flex items-center gap-2 rounded-full bg-leaf px-4 py-1.5 font-body text-xs font-extrabold uppercase tracking-[0.18em] text-white shadow-lg shadow-leaf/25">
+            <span aria-hidden>{"\u{1F6F5}"}</span> Free Delivery
+          </span>
+        </div>
 
         <h1 className="hero-heading animate-pop-in stagger-1 max-w-5xl font-display text-[16vw] leading-[0.82] tracking-wide sm:text-7xl md:text-8xl lg:text-[7.8rem]">
           CRUNCH SO

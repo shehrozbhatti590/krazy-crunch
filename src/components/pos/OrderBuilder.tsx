@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMenuItems } from "@/hooks/useMenuItems";
 import { supabase } from "@/lib/supabase";
+import { DEFAULT_DELIVERY_FEE } from "@/config/pos-settings";
 import type { OrderLineItem, OrderType, PaymentMethod } from "@/lib/pos-types";
 
 const orderTypes: { id: OrderType; label: string; icon: string }[] = [
@@ -16,6 +17,7 @@ export default function OrderBuilder({ onOrderCreated }: { onOrderCreated: () =>
   const [activeCategory, setActiveCategory] = useState("");
   const [cart, setCart] = useState<OrderLineItem[]>([]);
   const [orderType, setOrderType] = useState<OrderType>("takeaway");
+  const [deliveryFee, setDeliveryFee] = useState(DEFAULT_DELIVERY_FEE);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
   const [staffName, setStaffName] = useState("");
   const [notes, setNotes] = useState("");
@@ -34,12 +36,21 @@ export default function OrderBuilder({ onOrderCreated }: { onOrderCreated: () =>
     }
   }, [activeCategory, categories]);
 
+  useEffect(() => {
+    if (orderType === "delivery") {
+      setDeliveryFee(DEFAULT_DELIVERY_FEE);
+    } else {
+      setDeliveryFee(0);
+    }
+  }, [orderType]);
+
   const items = useMemo(
     () => dbItems.filter((item) => item.category === activeCategory),
     [dbItems, activeCategory]
   );
 
-  const total = cart.reduce((sum, line) => sum + line.price * line.qty, 0);
+  const itemsTotal = cart.reduce((sum, line) => sum + line.price * line.qty, 0);
+  const total = itemsTotal + deliveryFee;
   const itemCount = cart.reduce((sum, line) => sum + line.qty, 0);
 
   function addItem(id: string, name: string, price: number) {
@@ -85,6 +96,7 @@ export default function OrderBuilder({ onOrderCreated }: { onOrderCreated: () =>
       .insert({
         items: cart,
         subtotal: total,
+        delivery_fee: deliveryFee,
         payment_method: paymentMethod,
         order_type: orderType,
         status: "completed",
@@ -286,6 +298,26 @@ export default function OrderBuilder({ onOrderCreated }: { onOrderCreated: () =>
           </div>
         </div>
 
+        {orderType === "delivery" && (
+          <div>
+            <p className="mb-1.5 flex items-center justify-between font-body text-[10px] font-extrabold uppercase tracking-wider text-[#f5f4fb]/40">
+              <span>Delivery Fee</span>
+              {deliveryFee === 0 && (
+                <span className="rounded-full bg-leaf/15 px-2 py-0.5 text-leaf">Free</span>
+              )}
+            </p>
+            <div className="flex items-center gap-2 rounded-lg border border-[#f5f4fb]/10 bg-[#0b0a0f] px-3 py-2.5">
+              <span className="font-body text-sm text-[#f5f4fb]/50">Rs.</span>
+              <input
+                value={deliveryFee}
+                onChange={(e) => setDeliveryFee(Number(e.target.value.replace(/[^0-9]/g, "")) || 0)}
+                inputMode="numeric"
+                className="w-full bg-transparent font-body text-sm text-[#f5f4fb] outline-none"
+              />
+            </div>
+          </div>
+        )}
+
         <div>
           <p className="mb-1.5 font-body text-[10px] font-extrabold uppercase tracking-wider text-[#f5f4fb]/40">
             Payment
@@ -322,13 +354,31 @@ export default function OrderBuilder({ onOrderCreated }: { onOrderCreated: () =>
           className="resize-none rounded-lg border border-[#f5f4fb]/10 bg-[#0b0a0f] px-3 py-2.5 font-body text-sm text-[#f5f4fb] outline-none placeholder:text-[#f5f4fb]/30 focus:border-mustard/50"
         />
 
-        <div className="flex items-center justify-between border-t border-[#f5f4fb]/10 pt-3">
-          <span className="font-body text-xs font-bold uppercase tracking-wide text-[#f5f4fb]/50">
-            {itemCount} item{itemCount === 1 ? "" : "s"}
-          </span>
-          <span className="font-display text-2xl leading-none text-mustard">
-            Rs.{total.toLocaleString()}
-          </span>
+        <div className="border-t border-[#f5f4fb]/10 pt-3">
+          {deliveryFee > 0 && (
+            <div className="mb-1.5 flex items-center justify-between">
+              <span className="font-body text-xs text-[#f5f4fb]/45">Items subtotal</span>
+              <span className="font-body text-xs text-[#f5f4fb]/70">
+                Rs.{itemsTotal.toLocaleString()}
+              </span>
+            </div>
+          )}
+          {deliveryFee > 0 && (
+            <div className="mb-1.5 flex items-center justify-between">
+              <span className="font-body text-xs text-[#f5f4fb]/45">Delivery fee</span>
+              <span className="font-body text-xs text-[#f5f4fb]/70">
+                Rs.{deliveryFee.toLocaleString()}
+              </span>
+            </div>
+          )}
+          <div className="flex items-center justify-between">
+            <span className="font-body text-xs font-bold uppercase tracking-wide text-[#f5f4fb]/50">
+              {itemCount} item{itemCount === 1 ? "" : "s"}
+            </span>
+            <span className="font-display text-2xl leading-none text-mustard">
+              Rs.{total.toLocaleString()}
+            </span>
+          </div>
         </div>
 
         {feedback && (
