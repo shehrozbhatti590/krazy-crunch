@@ -1,9 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import type { DbMenuItem, MenuAccent, MenuItemInput } from "@/lib/menu-types";
+import type { DbMenuItem, MenuAccent, MenuItemInput, MenuVariant } from "@/lib/menu-types";
 
 const accents: MenuAccent[] = ["chili", "mustard", "leaf"];
+
+const DEFAULT_SIZE_LABELS = [
+  'Small (7")',
+  'Medium (11")',
+  'Large (13")',
+  'XLarge (16")',
+];
 
 export default function MenuItemForm({
   item,
@@ -29,12 +36,36 @@ export default function MenuItemForm({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
+  const [hasSizes, setHasSizes] = useState(!!(item?.variants && item.variants.length > 0));
+  const [variants, setVariants] = useState<MenuVariant[]>(
+    item?.variants && item.variants.length > 0
+      ? item.variants
+      : DEFAULT_SIZE_LABELS.map((label) => ({ label, price: 0 }))
+  );
+
+  function updateVariant(index: number, field: "label" | "price", value: string) {
+    setVariants((prev) =>
+      prev.map((v, i) =>
+        i === index
+          ? { ...v, [field]: field === "price" ? Number(value.replace(/[^0-9]/g, "")) || 0 : value }
+          : v
+      )
+    );
+  }
+
+  function addVariantRow() {
+    setVariants((prev) => [...prev, { label: "", price: 0 }]);
+  }
+
+  function removeVariantRow(index: number) {
+    setVariants((prev) => prev.filter((_, i) => i !== index));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const priceNum = Number(price);
 
-    if (!name.trim() || !category.trim() || !priceNum || priceNum <= 0) {
-      setError("Name, category and a valid price are required.");
+    if (!name.trim() || !category.trim()) {
+      setError("Name and category are required.");
       return;
     }
     if (!imageUrl.trim()) {
@@ -48,12 +79,35 @@ export default function MenuItemForm({
       return;
     }
 
+    let finalPrice: number;
+    let finalVariants: MenuVariant[] | null;
+
+    if (hasSizes) {
+      const cleanVariants = variants
+        .map((v) => ({ label: v.label.trim(), price: Number(v.price) }))
+        .filter((v) => v.label && v.price > 0);
+      if (cleanVariants.length < 2) {
+        setError("Add at least 2 sizes with a name and a valid price.");
+        return;
+      }
+      finalVariants = cleanVariants;
+      finalPrice = Math.min(...cleanVariants.map((v) => v.price));
+    } else {
+      const priceNum = Number(price);
+      if (!priceNum || priceNum <= 0) {
+        setError("A valid price is required.");
+        return;
+      }
+      finalVariants = null;
+      finalPrice = priceNum;
+    }
+
     setError("");
     setSaving(true);
     await onSave({
       name: name.trim(),
       description: description.trim(),
-      price: priceNum,
+      price: finalPrice,
       category: category.trim(),
       emoji: emoji.trim() || "\u{1F37D}\uFE0F",
       image_url: imageUrl.trim(),
@@ -62,6 +116,7 @@ export default function MenuItemForm({
       spice_level: spiceLevel,
       is_active: isActive,
       sort_order: item?.sort_order ?? 999,
+      variants: finalVariants,
     });
     setSaving(false);
   }
@@ -93,7 +148,7 @@ export default function MenuItemForm({
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Zinger Krazy Burger"
+              placeholder="e.g. Chicken Tikka Pizza"
               className="w-full rounded-lg border border-[#f5f4fb]/15 bg-[#0b0a0f] px-3 py-2.5 font-body text-sm text-[#f5f4fb] outline-none focus:border-mustard/50"
             />
           </div>
@@ -123,10 +178,6 @@ export default function MenuItemForm({
               required
               className="w-full rounded-lg border border-[#f5f4fb]/15 bg-[#0b0a0f] px-3 py-2.5 font-body text-sm text-[#f5f4fb] outline-none focus:border-mustard/50"
             />
-            <p className="mt-1 font-body text-[10px] text-[#f5f4fb]/35">
-              This photo becomes the card&apos;s background on the website. Paste any direct image
-              link (Unsplash, your own hosting, etc).
-            </p>
             {imageUrl.trim() && (
               <div
                 className="mt-2 h-24 w-full rounded-lg bg-cover bg-center"
@@ -135,7 +186,56 @@ export default function MenuItemForm({
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <label className="flex items-center gap-2.5 rounded-lg border border-mustard/30 bg-mustard/10 px-3 py-2.5">
+            <input
+              type="checkbox"
+              checked={hasSizes}
+              onChange={(e) => setHasSizes(e.target.checked)}
+              className="h-4 w-4 accent-mustard"
+            />
+            <span className="font-body text-sm font-bold text-[#f5f4fb]">
+              This item has multiple sizes (e.g. pizza)
+            </span>
+          </label>
+
+          {hasSizes ? (
+            <div className="flex flex-col gap-2 rounded-lg border border-[#f5f4fb]/10 bg-[#0b0a0f] p-3">
+              <p className="font-body text-[10px] font-extrabold uppercase tracking-wider text-[#f5f4fb]/40">
+                Sizes &amp; Prices
+              </p>
+              {variants.map((v, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <input
+                    value={v.label}
+                    onChange={(e) => updateVariant(i, "label", e.target.value)}
+                    placeholder="Size name"
+                    className="flex-1 rounded-lg border border-[#f5f4fb]/15 bg-[#14111a] px-3 py-2 font-body text-sm text-[#f5f4fb] outline-none focus:border-mustard/50"
+                  />
+                  <input
+                    value={v.price || ""}
+                    onChange={(e) => updateVariant(i, "price", e.target.value)}
+                    inputMode="numeric"
+                    placeholder="Price"
+                    className="w-24 rounded-lg border border-[#f5f4fb]/15 bg-[#14111a] px-3 py-2 font-body text-sm text-[#f5f4fb] outline-none focus:border-mustard/50"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeVariantRow(i)}
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-chili/10 text-chili transition hover:bg-chili/20"
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addVariantRow}
+                className="mt-1 rounded-lg border border-dashed border-[#f5f4fb]/20 py-2 font-body text-xs font-bold uppercase text-[#f5f4fb]/50 transition hover:border-mustard/40 hover:text-mustard"
+              >
+                + Add another size
+              </button>
+            </div>
+          ) : (
             <div>
               <label className="mb-1 block font-body text-[10px] font-extrabold uppercase tracking-wider text-[#f5f4fb]/40">
                 Price (Rs.)
@@ -148,23 +248,24 @@ export default function MenuItemForm({
                 className="w-full rounded-lg border border-[#f5f4fb]/15 bg-[#0b0a0f] px-3 py-2.5 font-body text-sm text-[#f5f4fb] outline-none focus:border-mustard/50"
               />
             </div>
-            <div>
-              <label className="mb-1 block font-body text-[10px] font-extrabold uppercase tracking-wider text-[#f5f4fb]/40">
-                Category
-              </label>
-              <input
-                list="category-options"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                placeholder="e.g. Burgers"
-                className="w-full rounded-lg border border-[#f5f4fb]/15 bg-[#0b0a0f] px-3 py-2.5 font-body text-sm text-[#f5f4fb] outline-none focus:border-mustard/50"
-              />
-              <datalist id="category-options">
-                {categories.map((cat) => (
-                  <option key={cat} value={cat} />
-                ))}
-              </datalist>
-            </div>
+          )}
+
+          <div>
+            <label className="mb-1 block font-body text-[10px] font-extrabold uppercase tracking-wider text-[#f5f4fb]/40">
+              Category
+            </label>
+            <input
+              list="category-options"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              placeholder="e.g. Pizza"
+              className="w-full rounded-lg border border-[#f5f4fb]/15 bg-[#0b0a0f] px-3 py-2.5 font-body text-sm text-[#f5f4fb] outline-none focus:border-mustard/50"
+            />
+            <datalist id="category-options">
+              {categories.map((cat) => (
+                <option key={cat} value={cat} />
+              ))}
+            </datalist>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -175,7 +276,6 @@ export default function MenuItemForm({
               <input
                 value={emoji}
                 onChange={(e) => setEmoji(e.target.value)}
-                placeholder="\u{1F354}"
                 className="w-full rounded-lg border border-[#f5f4fb]/15 bg-[#0b0a0f] px-3 py-2.5 text-center text-lg text-[#f5f4fb] outline-none focus:border-mustard/50"
               />
             </div>

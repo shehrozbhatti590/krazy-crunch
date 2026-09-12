@@ -5,6 +5,7 @@ import { useMenuItems } from "@/hooks/useMenuItems";
 import { supabase } from "@/lib/supabase";
 import { DEFAULT_DELIVERY_FEE } from "@/config/pos-settings";
 import type { OrderLineItem, OrderType, PaymentMethod } from "@/lib/pos-types";
+import type { DbMenuItem } from "@/lib/menu-types";
 
 const orderTypes: { id: OrderType; label: string; icon: string }[] = [
   { id: "takeaway", label: "Takeaway", icon: "\u{1F6CD}\uFE0F" },
@@ -29,6 +30,7 @@ export default function OrderBuilder({ onOrderCreated }: { onOrderCreated: () =>
   const [customOpen, setCustomOpen] = useState(false);
   const [customName, setCustomName] = useState("");
   const [customPrice, setCustomPrice] = useState("");
+  const [variantPicker, setVariantPicker] = useState<DbMenuItem | null>(null);
 
   useEffect(() => {
     if (!activeCategory && categories.length > 0) {
@@ -61,6 +63,20 @@ export default function OrderBuilder({ onOrderCreated }: { onOrderCreated: () =>
       }
       return [...prev, { id, name, price, qty: 1 }];
     });
+  }
+
+  function handleTapMenuItem(item: DbMenuItem) {
+    if (item.variants && item.variants.length > 0) {
+      setVariantPicker(item);
+    } else {
+      addItem(item.id, item.name, item.price);
+    }
+  }
+
+  function pickVariant(v: { label: string; price: number }) {
+    if (!variantPicker) return;
+    addItem(`${variantPicker.id}::${v.label}`, `${variantPicker.name} (${v.label})`, v.price);
+    setVariantPicker(null);
   }
 
   function addCustomItem() {
@@ -152,23 +168,34 @@ export default function OrderBuilder({ onOrderCreated }: { onOrderCreated: () =>
         )}
 
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
-          {items.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => addItem(item.id, item.name, item.price)}
-              className="flex flex-col items-start gap-1 rounded-xl border border-[#f5f4fb]/10 bg-[#14111a] p-3.5 text-left transition hover:-translate-y-0.5 hover:border-mustard/50 active:scale-95"
-            >
-              <span className="text-2xl" aria-hidden>
-                {item.emoji}
-              </span>
-              <span className="mt-1 font-body text-sm font-bold leading-tight text-[#f5f4fb]">
-                {item.name}
-              </span>
-              <span className="font-display text-lg leading-none text-mustard">
-                Rs.{item.price.toLocaleString()}
-              </span>
-            </button>
-          ))}
+          {items.map((item) => {
+            const hasVariants = !!(item.variants && item.variants.length > 0);
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleTapMenuItem(item)}
+                className="relative flex flex-col items-start gap-1 rounded-xl border border-[#f5f4fb]/10 bg-[#14111a] p-3.5 text-left transition hover:-translate-y-0.5 hover:border-mustard/50 active:scale-95"
+              >
+                {hasVariants && (
+                  <span className="absolute right-2 top-2 rounded-full bg-mustard/15 px-2 py-0.5 font-body text-[9px] font-bold uppercase text-mustard">
+                    Sizes
+                  </span>
+                )}
+                <span className="text-2xl" aria-hidden>
+                  {item.emoji}
+                </span>
+                <span className="mt-1 font-body text-sm font-bold leading-tight text-[#f5f4fb]">
+                  {item.name}
+                </span>
+                <span className="font-display text-lg leading-none text-mustard">
+                  {hasVariants && (
+                    <span className="text-xs font-body font-semibold text-[#f5f4fb]/40">From </span>
+                  )}
+                  Rs.{item.price.toLocaleString()}
+                </span>
+              </button>
+            );
+          })}
 
           <div className="flex flex-col justify-center rounded-xl border border-dashed border-mustard/40 bg-mustard/5 p-3.5">
             {!customOpen ? (
@@ -413,6 +440,39 @@ export default function OrderBuilder({ onOrderCreated }: { onOrderCreated: () =>
           {submitting ? "Saving..." : "Complete Order"}
         </button>
       </div>
+
+      {variantPicker && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-sm rounded-2xl border border-[#f5f4fb]/10 bg-[#14111a] p-5">
+            <div className="flex items-center justify-between">
+              <h3 className="font-display text-xl tracking-wide text-[#f5f4fb]">
+                {variantPicker.name}
+              </h3>
+              <button
+                onClick={() => setVariantPicker(null)}
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f5f4fb]/10 text-[#f5f4fb]/60"
+              >
+                &times;
+              </button>
+            </div>
+            <p className="mt-1 font-body text-xs text-[#f5f4fb]/45">Choose a size</p>
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              {variantPicker.variants?.map((v) => (
+                <button
+                  key={v.label}
+                  onClick={() => pickVariant(v)}
+                  className="rounded-xl border border-[#f5f4fb]/10 bg-[#0b0a0f] p-3 text-left transition hover:border-mustard/50 active:scale-95"
+                >
+                  <p className="font-body text-xs font-bold text-[#f5f4fb]">{v.label}</p>
+                  <p className="font-display text-lg leading-none text-mustard">
+                    Rs.{v.price.toLocaleString()}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

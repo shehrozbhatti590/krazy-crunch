@@ -1,5 +1,10 @@
 export type MenuCategory = string;
 
+export interface MenuVariant {
+  label: string;
+  price: number;
+}
+
 export interface MenuItem {
   id: string;
   name: string;
@@ -11,6 +16,7 @@ export interface MenuItem {
   emoji: string;
   image: string;
   accent: "chili" | "mustard" | "leaf";
+  variants?: MenuVariant[] | null;
 }
 
 export interface CartLine {

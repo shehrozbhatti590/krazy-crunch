@@ -15,7 +15,8 @@ export default function MenuCard({
   index?: number;
 }) {
   const { lines, addItem, increment, decrement } = useCart();
-  const line = lines.find((l) => l.id === item.id);
+  const hasVariants = !!(item.variants && item.variants.length > 0);
+  const line = !hasVariants ? lines.find((l) => l.id === item.id) : undefined;
   const qty = line?.qty ?? 0;
   const { ref, isVisible } = useScrollReveal<HTMLDivElement>();
 
@@ -65,11 +66,19 @@ export default function MenuCard({
 
         <div className="mt-auto flex items-center justify-between gap-3 border-t border-ink/[0.07] pt-4">
           <span className="font-display text-2xl leading-none tracking-wide text-chili">
+            {hasVariants && <span className="text-sm font-body font-semibold text-ink/40">From </span>}
             {siteConfig.currency}
             {item.price.toLocaleString()}
           </span>
 
-          {qty === 0 ? (
+          {hasVariants ? (
+            <Link
+              href={`/menu/${item.id}`}
+              className="cta-shine flex items-center gap-2 rounded-full bg-ink py-2 pl-4 pr-4 font-body text-xs font-extrabold uppercase tracking-wider text-cream shadow-sm transition duration-300 hover:-translate-y-0.5 hover:bg-mustard hover:text-[#141225] hover:shadow-lg active:scale-95"
+            >
+              Choose Size
+            </Link>
+          ) : qty === 0 ? (
             <button
               onClick={() => addItem(item)}
               className="cta-shine flex items-center gap-2 rounded-full bg-ink py-2 pl-2 pr-4 font-body text-xs font-extrabold uppercase tracking-wider text-cream shadow-sm transition duration-300 hover:-translate-y-0.5 hover:bg-mustard hover:text-[#141225] hover:shadow-lg active:scale-95"

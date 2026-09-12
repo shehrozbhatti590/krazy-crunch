@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/Header";
@@ -26,6 +26,7 @@ function toCardItem(item: DbMenuItem): MenuItem {
     emoji: item.emoji,
     image: item.image_url,
     accent: item.accent,
+    variants: item.variants,
   };
 }
 
@@ -35,6 +36,7 @@ export default function MenuItemDetailPage() {
   const [item, setItem] = useState<DbMenuItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const { lines, addItem, increment, decrement } = useCart();
 
   useEffect(() => {
@@ -61,8 +63,34 @@ export default function MenuItemDetailPage() {
   }, [id]);
 
   const cardItem = item ? toCardItem(item) : null;
-  const line = cardItem ? lines.find((l) => l.id === cardItem.id) : undefined;
+  const hasVariants = !!(cardItem?.variants && cardItem.variants.length > 0);
+
+  const activeVariant = useMemo(() => {
+    if (!hasVariants || !cardItem?.variants) return null;
+    return cardItem.variants[selectedVariantIndex] ?? cardItem.variants[0];
+  }, [hasVariants, cardItem, selectedVariantIndex]);
+
+  const cartLineId = hasVariants && activeVariant ? `${cardItem!.id}::${activeVariant.label}` : cardItem?.id;
+  const cartLineName =
+    hasVariants && activeVariant ? `${cardItem!.name} (${activeVariant.label})` : cardItem?.name ?? "";
+  const displayPrice = hasVariants && activeVariant ? activeVariant.price : cardItem?.price ?? 0;
+
+  const line = cartLineId ? lines.find((l) => l.id === cartLineId) : undefined;
   const qty = line?.qty ?? 0;
+
+  function handleAdd() {
+    if (!cardItem) return;
+    if (hasVariants && activeVariant) {
+      addItem({
+        ...cardItem,
+        id: cartLineId!,
+        name: cartLineName,
+        price: activeVariant.price,
+      });
+    } else {
+      addItem(cardItem);
+    }
+  }
 
   return (
     <>
@@ -119,7 +147,7 @@ export default function MenuItemDetailPage() {
                 <div className="mt-4 flex items-center gap-4">
                   <span className="font-display text-3xl leading-none text-chili">
                     {siteConfig.currency}
-                    {cardItem.price.toLocaleString()}
+                    {displayPrice.toLocaleString()}
                   </span>
                   <SpiceLevel level={cardItem.spiceLevel ?? 0} />
                 </div>
@@ -128,10 +156,37 @@ export default function MenuItemDetailPage() {
                   {cardItem.description}
                 </p>
 
+                {hasVariants && cardItem.variants && (
+                  <div className="mt-6">
+                    <p className="mb-2 font-body text-xs font-extrabold uppercase tracking-wide text-ink/50">
+                      Choose Size
+                    </p>
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                      {cardItem.variants.map((v, i) => (
+                        <button
+                          key={v.label}
+                          onClick={() => setSelectedVariantIndex(i)}
+                          className={`rounded-xl border p-3 text-left transition ${
+                            i === selectedVariantIndex
+                              ? "border-chili bg-chili/5 shadow-sm"
+                              : "border-ink/10 hover:border-ink/25"
+                          }`}
+                        >
+                          <p className="font-body text-xs font-bold text-ink">{v.label}</p>
+                          <p className="font-display text-lg leading-none text-chili">
+                            {siteConfig.currency}
+                            {v.price.toLocaleString()}
+                          </p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <div className="mt-auto pt-8">
                   {qty === 0 ? (
                     <button
-                      onClick={() => addItem(cardItem)}
+                      onClick={handleAdd}
                       className="cta-shine flex w-full items-center justify-center gap-2 rounded-xl bg-ink py-4 font-body text-sm font-extrabold uppercase tracking-wider text-cream shadow-lg transition hover:-translate-y-0.5 hover:bg-mustard hover:text-[#141225] active:scale-95 md:w-auto md:px-10"
                     >
                       <span className="flex h-7 w-7 items-center justify-center rounded-full bg-mustard text-base leading-none text-ink">
@@ -142,8 +197,8 @@ export default function MenuItemDetailPage() {
                   ) : (
                     <div className="theme-muted-card flex w-full items-center justify-between gap-3 rounded-xl bg-cream-dim p-2 md:w-auto">
                       <button
-                        onClick={() => decrement(cardItem.id)}
-                        aria-label={`Remove one ${cardItem.name}`}
+                        onClick={() => decrement(cartLineId!)}
+                        aria-label={`Remove one ${cartLineName}`}
                         className="flex h-11 w-11 items-center justify-center rounded-lg text-lg font-bold text-chili transition hover:bg-white active:scale-95"
                       >
                         -
@@ -152,8 +207,8 @@ export default function MenuItemDetailPage() {
                         {qty}
                       </span>
                       <button
-                        onClick={() => increment(cardItem.id)}
-                        aria-label={`Add one more ${cardItem.name}`}
+                        onClick={() => increment(cartLineId!)}
+                        aria-label={`Add one more ${cartLineName}`}
                         className="flex h-11 w-11 items-center justify-center rounded-lg text-lg font-bold text-chili transition hover:bg-white active:scale-95"
                       >
                         +
