@@ -6,7 +6,7 @@ export const siteConfig = {
   // WhatsApp number that orders are sent to.
   // Format: country code + number, NO "+", NO spaces, NO dashes.
   // Example for Pakistan: 923001234567
-  whatsappNumber: "923045576590",
+  whatsappNumber: "923075336271",
 
   // Shown in footer / location section. Edit to your real address.
   address: "Shop 3, Ashraf Colony Dhamial Road, Rawalpindi, Punjab",
