@@ -30,6 +30,27 @@ create policy "menu_items_anon_all" on menu_items
 
 alter publication supabase_realtime add table menu_items;
 
+-- Expense ledger (run this section in the Supabase SQL Editor)
+create table if not exists expenses (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  expense_date date not null default current_date,
+  title text not null,
+  category text not null default 'Other',
+  amount numeric not null check (amount > 0),
+  expense_type text not null default 'operational' check (expense_type in ('fixed', 'operational', 'deal')),
+  payment_method text not null default 'cash' check (payment_method in ('cash', 'online', 'credit')),
+  vendor text,
+  notes text,
+  is_recurring boolean not null default false
+);
+create index if not exists expenses_expense_date_idx on expenses (expense_date desc);
+create index if not exists expenses_type_idx on expenses (expense_type);
+alter table expenses enable row level security;
+drop policy if exists "expenses_anon_all" on expenses;
+create policy "expenses_anon_all" on expenses for all to anon using (true) with check (true);
+alter publication supabase_realtime add table expenses;
+
 -- Seed with the existing menu (safe to run once; skip if you already have items)
 insert into menu_items (name, description, price, category, emoji, accent, badge, spice_level, sort_order) values
 ('Krazy Solo Deal', '1 Zinger burger, regular fries, regular drink.', 950, 'Deals', '🍔', 'chili', 'Bestseller', 1, 0),

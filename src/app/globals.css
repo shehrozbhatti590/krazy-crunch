@@ -824,6 +824,29 @@ html[data-theme="dark"] .menu-arrow {
   background-color: rgba(9, 12, 20, 1);
 }
 
+/* POS expense manager controls */
+.field {
+  width: 100%;
+  margin-top: 0.35rem;
+  border: 1px solid rgba(245, 244, 251, 0.15);
+  border-radius: 0.5rem;
+  background: #0e0c12;
+  padding: 0.7rem 0.75rem;
+  color: #f5f4fb;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  outline: none;
+}
+.field:focus { border-color: var(--color-mustard); }
+.label { display: block; font-family: var(--font-body); font-size: 0.65rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(245, 244, 251, 0.52); }
+.button-main { border-radius: 0.5rem; background: var(--color-mustard); padding: 0.75rem 1rem; font-family: var(--font-body); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #17110d; transition: filter 160ms ease; }
+.button-main:hover { filter: brightness(0.94); }
+.button-muted { border: 1px solid rgba(245, 244, 251, 0.15); border-radius: 0.5rem; padding: 0.75rem 1rem; font-family: var(--font-body); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #f5f4fb; }
+.period-on, .period-off { border-radius: 0.25rem; padding: 0.35rem 0.75rem; font-family: var(--font-body); font-size: 0.75rem; font-weight: 700; }
+.period-on { background: var(--color-mustard); color: #17110d; }
+.period-off { color: rgba(245, 244, 251, 0.55); }
+.cell { padding: 0.75rem 1rem; font-family: var(--font-body); font-size: 0.75rem; color: rgba(245, 244, 251, 0.78); }
+
 
 /* ── Print styles (receipts & reports) ─────────────────────────────── */
 @media print {
@@ -831,8 +854,31 @@ html[data-theme="dark"] .menu-arrow {
     display: none !important;
   }
 
-  body {
+  html,
+  body,
+  main {
     background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Reports saved as PDF use a clean, ink-friendly white paper layout. */
+  main *,
+  main *::before,
+  main *::after {
+    color: #000 !important;
+    text-shadow: none !important;
+  }
+
+  main div,
+  main section,
+  main table,
+  main thead,
+  main tbody,
+  main tr,
+  main th,
+  main td {
+    background: #fff !important;
+    border-color: #000 !important;
   }
 
   .receipt-page {

@@ -9,8 +9,10 @@ import type { PosOrder } from "@/lib/pos-types";
 type Mode = "day" | "month";
 
 function toDateInputValue(d: Date) {
-  const off = d.getTimezoneOffset();
-  const local = new Date(d.getTime() - off * 60000);
+  const businessDate = new Date(d);
+  if (businessDate.getHours() < 3) businessDate.setDate(businessDate.getDate() - 1);
+  const off = businessDate.getTimezoneOffset();
+  const local = new Date(businessDate.getTime() - off * 60000);
   return local.toISOString().slice(0, 10);
 }
 
@@ -23,8 +25,10 @@ const MONTH_RE = /^\d{4}-\d{2}$/;
 
 function dayRangeIso(dateStr: string) {
   const safe = dateStr && DATE_RE.test(dateStr) ? dateStr : toDateInputValue(new Date());
-  const start = new Date(`${safe}T00:00:00`);
-  const end = new Date(`${safe}T23:59:59.999`);
+  // Business day: 2 PM to 2:59:59 AM on the following calendar day.
+  const [year, month, day] = safe.split("-").map(Number);
+  const start = new Date(year, month - 1, day, 14, 0, 0, 0);
+  const end = new Date(year, month - 1, day + 1, 2, 59, 59, 999);
   return { start: start.toISOString(), end: end.toISOString() };
 }
 

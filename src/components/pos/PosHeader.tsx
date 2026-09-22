@@ -43,6 +43,14 @@ export default function PosHeader({ todayTotal }: { todayTotal: number }) {
           >
             Reports
           </Link>
+          <Link
+            href="/pos/expenses"
+            className={`rounded-full px-4 py-2 font-body text-xs font-extrabold uppercase tracking-wide transition ${
+              pathname === "/pos/expenses" ? "bg-mustard text-[#17110d]" : "text-[#f5f4fb]/65 hover:bg-[#f5f4fb]/10"
+            }`}
+          >
+            Expenses
+          </Link>
         </nav>
 
         <div className="flex items-center gap-3">
