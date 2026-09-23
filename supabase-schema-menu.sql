@@ -51,6 +51,25 @@ drop policy if exists "expenses_anon_all" on expenses;
 create policy "expenses_anon_all" on expenses for all to anon using (true) with check (true);
 alter publication supabase_realtime add table expenses;
 
+-- Inventory / stock control (run this section in the Supabase SQL Editor)
+create table if not exists inventory_items (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  name text not null,
+  unit text not null default 'packets',
+  shop_stock numeric not null default 0 check (shop_stock >= 0),
+  store_stock numeric not null default 0 check (store_stock >= 0),
+  low_stock_threshold numeric not null default 1 check (low_stock_threshold >= 0),
+  notes text,
+  is_active boolean not null default true
+);
+create index if not exists inventory_items_name_idx on inventory_items (name);
+alter table inventory_items enable row level security;
+drop policy if exists "inventory_items_anon_all" on inventory_items;
+create policy "inventory_items_anon_all" on inventory_items for all to anon using (true) with check (true);
+alter publication supabase_realtime add table inventory_items;
+
 -- Seed with the existing menu (safe to run once; skip if you already have items)
 insert into menu_items (name, description, price, category, emoji, accent, badge, spice_level, sort_order) values
 ('Krazy Solo Deal', '1 Zinger burger, regular fries, regular drink.', 950, 'Deals', '🍔', 'chili', 'Bestseller', 1, 0),

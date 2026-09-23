@@ -16,7 +16,6 @@ whatsappNumber: "923001234567",
 Country code + number likhein, koi `+`, space ya dash nahi. Pakistan ke liye
 `92` se shuru hoga (e.g. `923001234567`).
 
-my sql psswrd Falconz@786%''
 
 Isi file mein aap ye bhi edit kar sakte hain:
 - `address`, `city`, `phoneDisplay` — location section aur footer ke liye
@@ -76,3 +75,26 @@ src/
 4. "Order via WhatsApp" dabane par ek formatted message ke sath
    wa.me/<number>?text=... link naye tab mein khulta hai -> order pehle se
    type hota hai, customer sirf Send dabata hai
+
+## POS shift / business day timing
+
+The POS business day follows the restaurant shift: it starts at **2:00 PM** and
+ends at **3:00 AM the next calendar day**. Orders placed after midnight and
+before 3:00 AM belong to the shift that began the previous afternoon. The New
+Order header total and the daily sales reports use this same business-day range.
+
+To change the shift hours later, edit these constants in
+`src/config/business-day.ts`:
+
+```ts
+export const BUSINESS_DAY_START_HOUR = 14;
+export const BUSINESS_DAY_END_HOUR = 3;
+```
+
+Use 24-hour local time (for example, 1 PM is `13`). Keep the end hour as the
+hour on the following calendar day. POS date-range queries use the shared
+`businessDateInputValue()` and `businessDayRangeIso()` helpers in that file, so
+pages that need a shift-based day should use those helpers too. The shift range
+is 2:00 PM inclusive through 3:00 AM exclusive; 3:00 AM is outside the shift.
+These settings change how existing orders are grouped in reports; they do not
+change the saved order timestamps.

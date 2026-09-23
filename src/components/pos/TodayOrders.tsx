@@ -2,13 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { businessDateInputValue, businessDayRangeIso } from "@/config/business-day";
 import type { PosOrder } from "@/lib/pos-types";
-
-function startOfTodayIso() {
-  const d = new Date();
-  d.setHours(0, 0, 0, 0);
-  return d.toISOString();
-}
 
 const paymentBadge: Record<string, string> = {
   cash: "\u{1F4B5} Cash",
@@ -32,10 +27,12 @@ export default function TodayOrders({
   const [loading, setLoading] = useState(true);
 
   const fetchOrders = useCallback(async () => {
+    const { start, end } = businessDayRangeIso(businessDateInputValue());
     const { data, error } = await supabase
       .from("orders")
       .select("*")
-      .gte("created_at", startOfTodayIso())
+      .gte("created_at", start)
+      .lt("created_at", end)
       .order("created_at", { ascending: false });
 
     if (!error && data) {
